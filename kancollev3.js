@@ -216,7 +216,7 @@ function comma(str,regexp)
 	var reg= new RegExp(regexp,"g");
 	var x=str;
 	x=x.replace(reg,"");
-	console.log("%cRegExp code:"+reg,"color:B55D23;");
+	console.log("%cRegExp code:"+reg,"font-size:24px;");
 	console.log("RegExp replace succeed");
 	return x;
 }

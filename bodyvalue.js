@@ -18,7 +18,7 @@ else
 	}
 	else
 	{
-		text += "KanColle Countdown(Ver1.0)";
+		text += "Kantai Collection Notification(Ver1.0)";
 	}
 	text += "</h4></div><div data-role=\"navbar\" style=\"position:fixed;margin-top:2.7em;width:100%;\"><ul><li><a href=\"#home\"  data-icon=\"home\">首页</a></li><li><a href=\"#twitter\" data-transition=\"slide\" data-icon=\"arrow-r\">官推截图</a></li></ul></div>";
 	if(document.URL.indexOf("v2") == -1)
