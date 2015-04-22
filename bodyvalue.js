@@ -36,7 +36,7 @@ else
 	text += "\n<ul><li><a href=\"#home\" data-transition=\"slide\" data-direction=\"reverse\" data-icon=\"home\">首页</a></li>";
 	text += "\n<li><a style=\"width:100%;\" href=\"#twitter\" data-icon=\"arrow-r\">官推截图</a></li></ul></div>";
 	text += "\n<div data-role=\"content\" id=\"twitter1\" data-theme=\"c\" style=\"position:relative;margin-top:5em;\">";
-	text += "\n<iframe id=\"ifm\" frameborder=\"0\" height=\"5000em\" onload=\"autoHeight()\" scrolling=\"no\"  align=\"middle\" marginwidth=\"40px\"  marginheight=\"80px\"  width=\"100%\" style=\"margin-top:-2.3em;\"   src=\"http://www.haoyuan.info/twitter/index.php\"></iframe>";
+	text += "\n<iframe id=\"ifm\" frameborder=\"0\" height=\"5000px\" scrolling=\"no\"  align=\"middle\" marginwidth=\"40px\"  marginheight=\"80px\"  width=\"100%\" style=\"margin-top:-2.3em;\"   src=\"http://www.haoyuan.info/twitter/index.php\"></iframe>";
 	text += "\n</div><br><div data-role=\"footer\" id=\"footer_1\" style=\"position:fixed;bottom:0px;right:0px;width:100%;\"><h1></h1></div></div>";
 }
 document.write(text);
@@ -57,6 +57,7 @@ function forIE()
 		alert("您正在使用Internet Explorer或IE内核的浏览器浏览该网页\n由于IE内核Trident对HTML5和JQuery Mobile的兼容性限制，\n推荐您使用Webkit内核的浏览器浏览\n（如Chrome浏览器、搜狗浏览器高速模式、360极速浏览器等）");
 	}
 }
+/*
 function autoHeight(){
         var iframe = document.getElementById("ifm");
         if(iframe.Document)
@@ -68,3 +69,4 @@ function autoHeight(){
             iframe.height = iframe.contentDocument.body.offsetHeight+13;
         }
     }
+	*/
