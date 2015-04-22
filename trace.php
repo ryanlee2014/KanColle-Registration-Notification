@@ -11,7 +11,7 @@ $notimepart="/：【\d+\/\d+\(\S+\)\】/";//没有小时的正则表达式
 $nexttime="/\d+\/\d+\(\S*曜日\)\s*\d+:\d+(?=】)/";//catch all
 $li="/\d+\S\d+(?=名】)/";
 $comma="/\d+(?=,)\d+/";
-$ne=preg_match("/\d+\S+(?=】以降)/",$contents,$next);
+$ne=preg_match("/\d+\S+(?:】)\S*(?=に|以)/",$contents,$next);
 $nemo=preg_match("/\d+/",$next[0],$nextmonth);
 $neda=preg_match("/\d{1,2}(?=\()/",$next[0],$nextdate);
 $newe=preg_match("/\S{3}曜日/",$next[0],$nextweekday);
@@ -85,7 +85,6 @@ else if((int)$month[0]==(int)$_month[0])
 		}
 
 }
-
 		/*
 $arr = array ('month'=>$month[0],'date'=>$day[0],'weekday'=>$weekday[0],'hour'=>$hour[0],'minute'=>$minute[0]);
 $jsonval=json_encode($arr);

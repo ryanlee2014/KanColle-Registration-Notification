@@ -27,6 +27,7 @@ else
 	}
 	text += "\n<div data-role=\"content\" style=\"position:relative;margin-top:5em;\" id=\"time\" data-theme=\"c\"></div>";
 	text += "\n<div data-role=\"content\" id=\"countdown\" data-theme=\"c\" ></div>";
+	text += "<br><br><br>";
 	text += "\n<div data-role=\"footer\" style=\"position:fixed;bottom:0px;right:0px;width:100%;\" id=\"footer\"><h1></h1></div></div>";
 	text += "\n<div data-role=\"page\" data-theme=\"a\" id=\"twitter\">";
 	text += "\n<div data-role=\"header\" style=\"position:fixed;top:0px;right:0px;width:100%;z-index:999\">";
