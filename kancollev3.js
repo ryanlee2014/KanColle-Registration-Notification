@@ -11,7 +11,7 @@ if(timepast(month, date, hour, minute) == -1)
 	}
 	else
 	{
-		txt = "<br>下次抢号时间为:<h3>" + month + "月" + date + "日&nbsp;&nbsp;&nbsp;&nbsp;(" + Convert(weekday) + ")&nbsp&nbsp&nbsp;<br>抢号时间:GMT-"+reTimezone()+"&nbsp;&nbsp;"+ Timezone(hour) + ":" + seczero(minute) + "<br>放号名额为:" + comma(people,",") + "名</h3>";
+		txt = "<br>下次抢号时间为:<h3>" + month + "月" + date + "日&nbsp;&nbsp;&nbsp;&nbsp;(" + Convert(weekday) + ")&nbsp&nbsp&nbsp;<br>抢号时间:GMT&nbsp;"+reTimezone()+"&nbsp;&nbsp;"+ Timezone(hour) + ":" + seczero(minute) + "<br>放号名额为:" + comma(people,",") + "名</h3>";
 	}
 }
 else if(timepast(month, date, hour, minute) == 0)
@@ -71,7 +71,14 @@ function reTimezone()
 	var d=new Date();
 	var date=d.getTimezoneOffset()/60;
 	date=-date;
-	return date;
+	if(date>0)
+	{
+		return "+"+date;
+	}
+	else 
+	{
+		return date;
+	}
 }
 //倒计时调用
 timecount(month, date, hour, minute);
@@ -93,7 +100,7 @@ function timepast(month, date, hour, minute)
 		}
 		else
 		{
-			if(nh <= hour)
+			if(nh < hour)
 			{
 				return -1;
 				console.warn("hour>nowhour");

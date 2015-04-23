@@ -85,6 +85,14 @@ else if((int)$month[0]==(int)$_month[0])
 		}
 
 }
+if($nextdate[0]=="")
+{
+	$nextdate[0]="null";
+}
+if($nextmonth[0]=="")
+{
+	$nextmonth[0]="null";
+}
 		/*
 $arr = array ('month'=>$month[0],'date'=>$day[0],'weekday'=>$weekday[0],'hour'=>$hour[0],'minute'=>$minute[0]);
 $jsonval=json_encode($arr);
