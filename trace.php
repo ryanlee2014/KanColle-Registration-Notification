@@ -1,4 +1,4 @@
-<?php header('Content-type: application/x-javascript'); ?>
+<?php header('Content-type: application/x-javascript;charset=utf-8'); ?>
 <?php 
 $url = "http://www.haoyuan.info/twitter/index.php"; //获取内容
 global $contents; 

@@ -11,7 +11,7 @@ if(timepast(month, date, hour, minute) == -1)
 	}
 	else
 	{
-		txt = "<br>下次抢号时间为:<h3>" + month + "月" + date + "日&nbsp;&nbsp;&nbsp;&nbsp;(" + Convert(weekday) + ")&nbsp&nbsp&nbsp;<br>抢号时间:UTF-"+reTimezone()+"&nbsp;&nbsp;"+ Timezone(hour) + ":" + seczero(minute) + "<br>放号名额为:" + comma(people,",") + "名</h3>";
+		txt = "<br>下次抢号时间为:<h3>" + month + "月" + date + "日&nbsp;&nbsp;&nbsp;&nbsp;(" + Convert(weekday) + ")&nbsp&nbsp&nbsp;<br>抢号时间:GMT-"+reTimezone()+"&nbsp;&nbsp;"+ Timezone(hour) + ":" + seczero(minute) + "<br>放号名额为:" + comma(people,",") + "名</h3>";
 	}
 }
 else if(timepast(month, date, hour, minute) == 0)
