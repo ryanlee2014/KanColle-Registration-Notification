@@ -1,6 +1,5 @@
 <?php header('Content-type: application/x-javascript;charset=utf-8'); ?>
 <?php 
-
 $url = "http://www.haoyuan.info/twitter/index.php"; //获取内容
 global $contents; 
 $contents = file_get_contents($url); 
@@ -13,7 +12,7 @@ $notimepart="/：【\d+\/\d+\(\S+\)\】/";//没有小时的正则表达式
 $nexttime="/\d+\/\d+\(\S*曜日\)\s*\d+:\d+(?=】)/";//catch all
 $li="/\d+\S\d+(?=名】)/";
 $comma="/\d+(?=,)\d+/";
-$ne=preg_match("/\d+\S+(?:】)\S*(?=に|以)/",$contents,$next);
+$ne=preg_match("/(?:日【)\d+\S+(?:】)\S*(?=に|以)/",$contents,$next);
 $nemo=preg_match("/\d+/",$next[0],$nextmonth);
 $neda=preg_match("/\d{1,2}(?=\()/",$next[0],$nextdate);
 $newe=preg_match("/\S{3}曜日/",$next[0],$nextweekday);
@@ -36,7 +35,6 @@ $min=preg_match("/\d+$/",$nval[0],$minute);
 $people=$pe[0];
 //活动设定
 $eve=preg_match("/(春|夏|秋|冬)イベント\S+(?:】)/",$contents,$event);
-
 $eventval=$event[0];
 $ye=preg_match("/[0-9]{4}/",$eventval,$event_year);
 if($event_year[0]=="")
@@ -47,7 +45,7 @@ else
 {
 	$event_yr=$event_year[0];
 }
-$evn=preg_match("/(春|夏|秋|冬)イベント\S+(?:】)(?=は|の|を)/",$eventval,$event_name);
+$evn=preg_match("/(春|夏|秋|冬)イベント\S+(?:】)$|(?:は|の|を)/",$eventval,$event_name);
 if($event_month[0]==""&&$event_date[0]==""&&$event_weekday[0]=="")
 {
 	$event_m="null";
@@ -60,7 +58,6 @@ else
 	$event_d=$event_date[0];
 	$event_w=$event_weekday[0];
 }
-
 if((int)$_month[0]>(int)$month[0])
 {
 $m=$_month[0];	
@@ -87,7 +84,6 @@ else if((int)$month[0]==(int)$_month[0])
 			$h=$hour[0];
 			$w=$weekday[0];
 		}
-
 }
 if($nextdate[0]=="")
 {
@@ -97,14 +93,12 @@ if($nextmonth[0]=="")
 {
 	$nextmonth[0]="null";
 }
-
 		/*
 $arr = array ('month'=>$month[0],'date'=>$day[0],'weekday'=>$weekday[0],'hour'=>$hour[0],'minute'=>$minute[0]);
 $jsonval=json_encode($arr);
 $txt="kancolle={month:\"".$month[0]."\",date:\"".$day[0]."\",weekday:\"".$weekday[0]."\",hour:\"".$hour[0]."\",minute:\"".$minute[0]."\"}";
 */
 //如果使用JSON则启动此段
-
 ?>
 <?php
 /*
@@ -135,17 +129,14 @@ echo "weekday=\"".$w."\";\n";
 echo "hour=".$h.";\n";
 echo "minute=".$mi.";\n";
 echo "people=\"".$people."\";\n";
-
 echo "event_year=".$event_yr.";\n";
 echo "event_name=\"".$event_name[0]."\";\n";
 echo "event_month=".$event_m.";\n";
 echo "event_date=".$event_d.";\n";
 echo "event_weekday=\"".$event_w."\";\n";
-
 echo "nextmonth=".$nextmonth[0].";\n";
 echo "nextdate=".$nextdate[0].";\n";
-echo "nextweekday=\"".$nextweekday[0]."\";\n";
-
+echo "nextweekday=\"".$nextweekday[0]."\";";
 ?>
 <?php
 /*
@@ -164,7 +155,6 @@ $dom->load($filename);
 }
 else
 {
-	
 }
 */
 ?>

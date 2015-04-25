@@ -11,7 +11,7 @@ if(timepast(month, date, hour, minute) == -1)
 	}
 	else
 	{
-		txt = "<br>下次抢号时间为:<h3>" + month + "月" + date + "日&nbsp;&nbsp;&nbsp;&nbsp;(" + Convert(weekday) + ")&nbsp&nbsp&nbsp;<br>抢号时间:GMT&nbsp;"+reTimezone()+"&nbsp;&nbsp;"+ Timezone(hour) + ":" + seczero(minute) + "<br>放号名额为:" + comma(people,",") + "名</h3>";
+		txt = "<br>下次抢号时间为:<h3>" + month + "月" + date + "日&nbsp;&nbsp;&nbsp;&nbsp;(" + Convert(weekday) + ")&nbsp&nbsp&nbsp;<br>抢号时间:GMT"+reTimezone()+"&nbsp;&nbsp;"+ Timezone(hour) + ":" + seczero(minute) + "<br>放号名额为:" + comma(people,",") + "名</h3>";
 	}
 }
 else if(timepast(month, date, hour, minute) == 0)
@@ -21,7 +21,7 @@ else if(timepast(month, date, hour, minute) == 0)
 else if(timepast(month, date, hour, minute) == 1)
 {
 	txt = "<br>本次抢号活动已经结束，若抢号未成功，请等待下一次的官方抢号时间.<br>";
-	txt+="<span class=\"black\">上一次</span>的抢号时间为:<h3>" + month + "月" + date + "日&nbsp;&nbsp;&nbsp;&nbsp;(" + Convert(weekday) + ")&nbsp&nbsp&nbsp;<br>抢号时间:UTF-"+reTimezone()+"&nbsp;&nbsp;"+ Timezone(hour) + ":" + seczero(minute) + "<br>放号名额为:" + comma(people,",") + "名<br><br>下一次抢号时间为<br>"+nextmonth+"月"+nextdate+"日&nbsp;&nbsp;("+Convert(nextweekday)+")</h3>";
+	txt+="<span class=\"black\">上一次</span>的抢号时间为:<h3>" + month + "月" + date + "日&nbsp;&nbsp;&nbsp;&nbsp;(" + Convert(weekday) + ")&nbsp&nbsp&nbsp;<br>抢号时间:GMT"+reTimezone()+"&nbsp;&nbsp;"+ Timezone(hour) + ":" + seczero(minute) + "<br>放号名额为:" + comma(people,",") + "名<br><br>下一次抢号时间为<br>"+nextmonth+"月"+nextdate+"日&nbsp;&nbsp;("+Convert(nextweekday)+")</h3>";
 	console.info("%cTimepast function output code:"+timepast(month, date, hour, minute),"font-size:18px");
 	console.warn("Time up");
 }
@@ -39,6 +39,7 @@ else if(event_year==null&&event_name!="")
 else
 {
 	console.warn("No event was showed!");
+	console.warn("活动时间"+event_year+"活动名"+event_name);
 }
 if(event_month!=null&&event_date!=null)
 {
