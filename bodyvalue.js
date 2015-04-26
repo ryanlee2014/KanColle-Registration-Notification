@@ -1,4 +1,6 @@
+console.time("running bodyvalue use time");
 var text;
+useragent();
 var x = navigator;
 var browser = x.userAgent;
 var version = parseFloat(x.appVersion);
@@ -11,7 +13,8 @@ if(browser.indexOf("Internet Explorer") != -1)
 }
 else
 {
-	text = "<div data-role=\"page\" data-theme=\"a\" id=\"home\"><div data-role=\"header\"  style=\"position:fixed;top:0px;right:0px;width:100%;z-index:999\"><h4>";
+	text = useragent();
+	text += "<div data-role=\"page\" data-theme=\"a\" id=\"home\"><div data-role=\"header\"  style=\"position:fixed;top:0px;right:0px;width:100%;z-index:999\"><h4>";
 	if(document.URL.indexOf("v2") == -1)
 	{
 		text += "舰队collection放号时间";
@@ -47,6 +50,7 @@ console.log("footer is completed");
 var footer_1 = document.getElementById("footer_1");
 footer_1.innerHTML = "<p align=\"center\">官方推特转发由<span class=\"bold\">本站</span>提供,判断逻辑由<span class=\"author\">Ryan</span>编写</p>";
 forIE();
+console.timeEnd("running bodyvalue use time");
 function forIE()
 {
 	var x = navigator;
@@ -55,6 +59,20 @@ function forIE()
 	if(ieua != -1)
 	{
 		alert("您正在使用Internet Explorer或IE内核的浏览器浏览该网页\n由于IE内核Trident对HTML5和JQuery Mobile的兼容性限制，\n推荐您使用Webkit内核的浏览器浏览\n（如Chrome浏览器、搜狗浏览器高速模式、360极速浏览器等）");
+	}
+}
+function useragent()
+{
+	var x=navigator;
+	var ua=x.userAgent;
+	var uaok=ua.indexOf("Android"||"iOS"||"iPad"||"iPhone"||"Windows Phone");
+	if(uaok==-1)
+	{
+		return "<embed style=\"float:right;margin-right=20px;position:fixed;z-index:1;top:50%;right:0;\" src=\"http://www.xiami.com/widget/9768381_1769745040,1770729861,1774137590,1773750009,1773865494,1770869934,_235_346_5677fc_536dfe_1/multiPlayer.swf\" width=\"235\" type=\"application/x-shockwave-flash\" height=\"346\" align=\"ABSBOTTOM\"></embed>";
+	}
+	else
+	{
+		return "";
 	}
 }
 /*

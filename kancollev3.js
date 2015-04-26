@@ -1,56 +1,70 @@
-console.time("running all code time:");
-var txt = new String();
+console.time("running kancollev3.js use time");
 _screenwidth("ifm");
-if(timepast(month, date, hour, minute) == -1)
+remindTimezoneChange();
+maincore();
+function maincore()
 {
-	if(hour == null && minute == null)
+	var txt = new String();
+	if(timepast(month, date, hour, minute) == -1)
 	{
-		txt = "<br>下次抢号时间为:<h3>" + month + "月" + date + "日&nbsp;&nbsp;&nbsp;&nbsp;(" + Convert(weekday) + ")&nbsp&nbsp&nbsp;" + "<br>放号名额为:" + comma(people,",") + "名</h3>";
-		txt += "<h2>官方尚未公开具体抢号时间</h2>";
-
+		if(hour == null && minute == null)
+		{
+			txt = "<br>下次抢号时间为:<h3>" + month + "月" + date + "日&nbsp;&nbsp;&nbsp;&nbsp;(" + Convert(weekday) + ")&nbsp&nbsp&nbsp;" + "<br>放号名额为:" + comma(people,",") + "名</h3>";
+			txt += "<h2>官方尚未公开具体抢号时间</h2>";
+		}
+		else
+		{
+			txt = "<br>下次抢号时间为:<h3>" + month + "月" + date + "日&nbsp;&nbsp;&nbsp;&nbsp;(" + Convert(weekday) + ")&nbsp&nbsp&nbsp;<br>抢号时间:GMT"+reTimezone()+"&nbsp;&nbsp;"+ Timezone(hour) + ":" + seczero(minute) + "<br>放号名额为:" + comma(people,",") + "名</h3>";
+		}
+	}
+	else if(timepast(month, date, hour, minute) == 0)
+	{
+		txt = "<br>开始抢号，请提督做好准备。抢号地址:<h1><a href=\"http:\/\/www.dmm.com\/netgame\/social\/-\/gadgets\/=\/app_id=854854\/\" target=\"blank\">艦隊これくしょん　艦これ</a>";
+	}
+	else if(timepast(month, date, hour, minute) == 1)
+	{
+		txt = "<br>本次抢号活动已经结束，若抢号未成功，请等待下一次的官方抢号时间.<br>";
+		txt+="<span class=\"black\">上一次</span>的抢号时间为:<h3>" + month + "月" + date + "日&nbsp;&nbsp;&nbsp;&nbsp;(" + Convert(weekday) + ")&nbsp&nbsp&nbsp;<br>抢号时间:GMT"+reTimezone()+"&nbsp;&nbsp;"+ Timezone(hour) + ":" + seczero(minute) + "<br>放号名额为:" + comma(people,",") + "名<br><br>下一次抢号时间为<br>"+nextmonth+"月"+nextdate+"日&nbsp;&nbsp;("+Convert(nextweekday)+")</h3>";
+		console.info("%cTimepast function output code:"+timepast(month, date, hour, minute),"font-size:18px");
+		console.warn("Time up");
+}
+	if(event_year!=""&&event_year!=null&&event_name!="")
+	{
+		txt+="<h4>当前活动:"+event_year+"年【"+comma(event_name,"[【】]")+"】</h4>";
+		console.info("Event showed completed!");
+	}
+	else if(event_year==null&&event_name!="")
+	{
+		var g=new Date();
+		txt+="<h4>当前活动:"+(Number(g.getYear())+1900)+"年【"+comma(event_name,"[【】]")+"】</h4>";
+		console.info("Event showed completed but no year data posted!");
 	}
 	else
 	{
-		txt = "<br>下次抢号时间为:<h3>" + month + "月" + date + "日&nbsp;&nbsp;&nbsp;&nbsp;(" + Convert(weekday) + ")&nbsp&nbsp&nbsp;<br>抢号时间:GMT"+reTimezone()+"&nbsp;&nbsp;"+ Timezone(hour) + ":" + seczero(minute) + "<br>放号名额为:" + comma(people,",") + "名</h3>";
+		console.warn("No event was showed!");
+		console.warn("活动时间"+event_year+"活动名"+event_name);
 	}
-}
-else if(timepast(month, date, hour, minute) == 0)
-{
-	txt = "<br>开始抢号，请提督做好准备。抢号地址:<h1><a href=\"http:\/\/www.dmm.com\/netgame\/social\/-\/gadgets\/=\/app_id=854854\/\" target=\"blank\">艦隊これくしょん　艦これ</a>";
-}
-else if(timepast(month, date, hour, minute) == 1)
-{
-	txt = "<br>本次抢号活动已经结束，若抢号未成功，请等待下一次的官方抢号时间.<br>";
-	txt+="<span class=\"black\">上一次</span>的抢号时间为:<h3>" + month + "月" + date + "日&nbsp;&nbsp;&nbsp;&nbsp;(" + Convert(weekday) + ")&nbsp&nbsp&nbsp;<br>抢号时间:GMT"+reTimezone()+"&nbsp;&nbsp;"+ Timezone(hour) + ":" + seczero(minute) + "<br>放号名额为:" + comma(people,",") + "名<br><br>下一次抢号时间为<br>"+nextmonth+"月"+nextdate+"日&nbsp;&nbsp;("+Convert(nextweekday)+")</h3>";
-	console.info("%cTimepast function output code:"+timepast(month, date, hour, minute),"font-size:18px");
-	console.warn("Time up");
-}
-if(event_year!=""&&event_year!=null&&event_name!="")
-{
-	txt+="<h4>当前活动:"+event_year+"年【"+comma(event_name,"[【】]")+"】</h4>";
-	console.info("Event showed completed!");
-}
-else if(event_year==null&&event_name!="")
-{
-	var g=new Date();
-	txt+="<h4>当前活动:"+(Number(g.getYear())+1900)+"年【"+comma(event_name,"[【】]")+"】</h4>";
-	console.info("Event showed completed but no year data posted!");
-}
-else
-{
-	console.warn("No event was showed!");
-	console.warn("活动时间"+event_year+"活动名"+event_name);
-}
-if(event_month!=null&&event_date!=null)
-{
-	txt+="<h4>活动开始时间:"+event_month+"月"+event_date+"日 ("+Convert(event_weekday)+")</h4>";
-}
-console.info("%cTimepast code:"+timepast(month, date, hour, minute),"font-size:24px");
-var dom_time = document.getElementById("time");
-dom_time.innerHTML = txt;
-console.timeEnd("running all code time:");
+	if(event_month!=null&&event_date!=null)
+	{
+		txt+="<h4>活动开始时间:"+event_month+"月"+event_date+"日 ("+Convert(event_weekday)+")</h4>";
+	}
+	console.info("%cTimepast code:"+timepast(month, date, hour, minute),"font-size:24px");
+	var dom_time = document.getElementById("time");
+	dom_time.innerHTML = txt;
+	}
+console.timeEnd("running kancollev3.js use time");
 //函数部分
 //时区
+function remindTimezoneChange()
+{
+	var v=new Date();
+	var timezone=v.getTimezoneOffset()/60;
+	if(timezone != -9)
+	{
+		alert("您的电脑时区不是日本时区，若需要抢号请将电脑时区更改为日本东京时区");
+	}
+
+}
 function Timezone(hour)
 {
 	var a = new Date();
@@ -58,7 +72,7 @@ function Timezone(hour)
 	var h = hour + (-8 - timezone);
 	if(timezone != -9)
 	{
-		alert("您的电脑时区不是日本时区，若需要抢号请将电脑时区更改为日本东京时区");
+		console.log("您的电脑时区不是日本时区，若需要抢号请将电脑时区更改为日本东京时区");
 	}
 	else
 	{
@@ -95,18 +109,20 @@ function timepast(month, date, hour, minute)
 	if(maxnum(nm, month) && maxnum(nd, date))
 	{
 		console.info("Compare month and date complete!");
+		console.log(nh*60+nmi-hour*60-minute)
 		if(hour == null && minute == null)
 		{
 			return -1;
 		}
 		else
 		{
-			if(nh < hour)
+			if(nh*60+nmi < hour*60+minute)
 			{
 				return -1;
 				console.warn("hour>nowhour");
+				console.log(nh*60+nmi-hour*60-minute)
 			}
-			else if(nh <= hour + 1)
+			else if(nh*60+nmi <= hour*60 + minute+60)
 			{
 				return 0;
 				console.warn("hour plus one >nowhour");
@@ -191,7 +207,8 @@ function timecount(month, date, hour, minute)
 			}
 			else
 			{
-			htmlo.innerHTML = "<h4>距离抢号时间还有" + seczero(ld) + "日" + seczero(lh) + "小时" + seczero(lmi) + "分" + seczero(ls)+"秒</h4>";
+				maincore();
+				htmlo.innerHTML = "<h4>距离抢号时间还有" + seczero(ld) + "日" + seczero(lh) + "小时" + seczero(lmi) + "分" + seczero(ls)+"秒</h4>";
 			}
 			t = setTimeout("timecount(month,date,hour,minute)", 1000);
 		}

@@ -27,7 +27,7 @@ $_mon=preg_match("/\d{1,2}/",$nowtimepart[0],$_month);
 $_da=preg_match("/\d{1,2}(?=\()/",$nowtimepart[0],$_date);
 $_weekd=preg_match("/\S{3}曜日/",$nowtimepart[0],$_weekday);
 $text=preg_match($part,$contents,$matches);
-$mon=preg_match("/\d{1,2}/",$nval[0],$month);
+$mon=preg_match("/\d+(?=\/)/",$nval[0],$month);
 $da=preg_match("/\d{1,2}(?=\()/",$nval[0],$day);
 $week=preg_match("/\S{3}曜日/",$nval[0],$weekday);
 $ho=preg_match("/\d+(?=:)/",$nval[0],$hour);
@@ -61,8 +61,8 @@ else
 if((int)$_month[0]>(int)$month[0])
 {
 $m=$_month[0];	
-$h=null;
-$mi=null;
+$h="null";
+$mi="null";
 $dat=$_date[0];
 $w=$_weekday[0];
 }
@@ -84,6 +84,14 @@ else if((int)$month[0]==(int)$_month[0])
 			$h=$hour[0];
 			$w=$weekday[0];
 		}
+	else
+	{
+		$m=$month[0];
+		$dat=$day[0];
+		$mi=$minute[0];
+		$h=$hour[0];
+		$w=$weekday[0];
+	}
 }
 if($nextdate[0]=="")
 {
