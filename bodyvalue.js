@@ -1,6 +1,5 @@
 console.time("running bodyvalue use time");
 var text;
-useragent();
 var x = navigator;
 var browser = x.userAgent;
 var version = parseFloat(x.appVersion);
@@ -13,7 +12,7 @@ if(browser.indexOf("Internet Explorer") != -1)
 }
 else
 {
-	text = useragent();
+	text = checkCookie();
 	text += "<div data-role=\"page\" data-theme=\"a\" id=\"home\"><div data-role=\"header\"  style=\"position:fixed;top:0px;right:0px;width:100%;z-index:999\"><h4>";
 	if(document.URL.indexOf("v2") == -1)
 	{
@@ -68,11 +67,101 @@ function useragent()
 	var uaok=ua.indexOf("Android"||"iOS"||"iPad"||"iPhone"||"Windows Phone");
 	if(uaok==-1)
 	{
+		var r=confirm("是否打开音乐播放器？");
+		if(r==true)
+		{
 		return "<embed style=\"float:right;margin-right=20px;position:fixed;z-index:1;top:50%;right:0;\" src=\"http://www.xiami.com/widget/9768381_1769745040,1770729861,1774137590,1773750009,1773865494,1770869934,_235_346_5677fc_536dfe_1/multiPlayer.swf\" width=\"235\" type=\"application/x-shockwave-flash\" height=\"346\" align=\"ABSBOTTOM\"></embed>";
+		}
+		else
+		{
+			return "";	
+		}
 	}
 	else
 	{
 		return "";
+	}
+}
+function getCookie(c_name)
+{
+	if (document.cookie.length>0)
+	{ 
+		c_start=document.cookie.indexOf(c_name + "=");
+		if (c_start!=-1)
+		{ 
+			c_start=c_start + c_name.length+1; 
+			c_end=document.cookie.indexOf(";",c_start);
+			if (c_end==-1) 
+			{
+				c_end=document.cookie.length;
+			}
+			console.info("%cgetCookie succeed!","font-size:21px;");
+			return unescape(document.cookie.substring(c_start,c_end));
+		} 
+	}
+	return "";
+}
+function setCookie(name,value,expiredays)
+{
+	var exdate=new Date();
+	exdate.setDate(exdate.getDate()+expiredays);
+	document.cookie=name+"="+escape(value)+((expiredays==null)?"":";expires="+exdate.toGMTString());
+	console.log("setCookie succeed!");
+}
+function checkCookie()
+{
+	var x=navigator;
+	var ua=x.userAgent;
+	var uaok=ua.indexOf("Android"||"iOS"||"iPad"||"iPhone"||"Windows Phone");
+	if(uaok!=-1)
+	{
+		mobileplayer=getCookie("mobileplayer");
+		if(mobileplayer=="true")
+		{
+			return "<audio src=\"http://www.haoyuan.info/music/wacci.mp3\" autoplay=\"autoplay\" controls />";
+		}	
+		else
+		{
+			var Okplayer=confirm("是否开启HTML5播放器?\n该功能10天内有效");
+			if(Okplayer==true)
+			{
+				setCookie("mobileplayer","true",10);
+				console.info(unescape(document.cookie));
+				return "<audio src=\"http://www.haoyuan.info/music/wacci.mp3\" autoplay=\"autoplay\" controls />";
+			}
+			else if(Okplayer==false)
+			{
+				setCookie("mobileplayer","false",10);
+				console.info(unescape(document.cookie));
+			}
+		}
+	}
+	else
+	{
+		flashplayer=getCookie("flashplayer");
+		if(flashplayer=="true")
+		{
+			console.info(unescape(document.cookie));
+			return "<embed style=\"float:right;margin-right=20px;position:fixed;z-index:1;top:50%;right:0;\" src=\"http://www.xiami.com/widget/9768381_1769745040,1770729861,1774137590,1773750009,1773865494,1770869934,_235_346_5677fc_536dfe_1/multiPlayer.swf\" width=\"235\" type=\"application/x-shockwave-flash\" height=\"346\" align=\"ABSBOTTOM\"></embed>";
+		}
+		else if(flashplayer=="false")
+		{
+			return "";
+		}
+		else
+		{
+			var Okplayer=confirm("是否十天内开启Flash音乐播放器?");
+			if(Okplayer==true)
+			{
+				setCookie("flashplayer","true",10);
+			return "<embed style=\"float:right;margin-right=20px;position:fixed;z-index:1;top:50%;right:0;\" src=\"http://www.xiami.com/widget/9768381_1769745040,1770729861,1774137590,1773750009,1773865494,1770869934,_235_346_5677fc_536dfe_1/multiPlayer.swf\" width=\"235\" type=\"application/x-shockwave-flash\" height=\"346\" align=\"ABSBOTTOM\"></embed>";
+			}
+			else if(Okplayer==false)
+			{
+				setCookie("flashplayer","false",10);	
+			}
+		}
+		return useragent();
 	}
 }
 /*
