@@ -1,0 +1,29 @@
+@charset "utf-8";
+span.bold {
+	font-weight: normal;
+	font-size: 24px;
+}
+span.author {
+	font-weight: normal;
+	font-family:"微软雅黑";
+	font-size: 20px;
+}
+noscript.noscript{
+	font-weight:normal;
+	font-family:"微软雅黑";
+	font-size:24px;
+}
+div {
+	font-size:large;
+	font-family:"微软雅黑";
+    font-weight:normal;
+}
+span.black{
+	font-weight:bolder;
+}
+span.header {
+	font-size:large;
+	font-family:"Microsoft YaHei UI", "微软雅黑", "华文细黑", "黑体";
+	font-weight:normal;
+	float:right;
+}

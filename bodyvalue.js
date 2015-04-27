@@ -1,11 +1,8 @@
 console.time("running bodyvalue use time");
 var text;
-var x = navigator;
-var browser = x.userAgent;
-var version = parseFloat(x.appVersion);
-if(browser.indexOf("Internet Explorer") != -1)
+if(returnUserAgent("useragent") == "IE")
 {
-	if(version <= 7)
+	if(returnUserAgent("version") <= 7)
 	{
 		text = "<div data-role=\"page\" data-theme=\"a\" id=\"home\"><div data-role=\"header\"><h1>您的浏览器版本过低，为了您更好的体验，请更新至Chrome或Internet Explorer 8以上版本</h1></div><div data-role=\"header\"><h1>舰队collection放号时间</h1></div><div data-role=\"navbar\"><ul><li><a href=\"#home\"  data-icon=\"home\">首页</a></li><li><a href=\"#twitter\" data-transition=\"slide\" data-icon=\"arrow-r\">官推截图</a></li></ul></div>";
 	}
@@ -22,7 +19,10 @@ else
 	{
 		text += "Kantai Collection Notification(Ver1.0)";
 	}
-	text += "</h4></div><div data-role=\"navbar\" style=\"position:fixed;margin-top:2.7em;width:100%;\"><ul><li><a href=\"#home\"  data-icon=\"home\">首页</a></li><li><a href=\"#twitter\" data-transition=\"slide\" data-icon=\"arrow-r\">官推截图</a></li></ul></div>";
+	text += "<span align=\"right\" class=\"header\" onClick=\"delCookie()\">";
+	text += btncookie();
+	text += "</span></h4>";
+	text +="</div><div data-role=\"navbar\" style=\"position:fixed;margin-top:2.7em;width:100%;\"><ul><li><a href=\"#home\"  data-icon=\"home\">首页</a></li><li><a href=\"#twitter\" data-transition=\"slide\" data-icon=\"arrow-r\">官推截图</a></li></ul></div>";
 	if(document.URL.indexOf("v2") == -1)
 	{
 		text += "<div data-role=\"content\" style=\"margin-top:5em;\"><a href=\"kancollev2.html\" target=\"blank\"><button>此页面已经停止维护,点击此前往新版</button></a></div>";
@@ -52,34 +52,9 @@ forIE();
 console.timeEnd("running bodyvalue use time");
 function forIE()
 {
-	var x = navigator;
-	var ua = x.userAgent;
-	var ieua = ua.indexOf("Trident");
-	if(ieua != -1)
+	if(returnUserAgent("useragent") == "Trident")
 	{
 		alert("您正在使用Internet Explorer或IE内核的浏览器浏览该网页\n由于IE内核Trident对HTML5和JQuery Mobile的兼容性限制，\n推荐您使用Webkit内核的浏览器浏览\n（如Chrome浏览器、搜狗浏览器高速模式、360极速浏览器等）");
-	}
-}
-function useragent()
-{
-	var x=navigator;
-	var ua=x.userAgent;
-	var uaok=ua.indexOf("Android"||"iOS"||"iPad"||"iPhone"||"Windows Phone");
-	if(uaok==-1)
-	{
-		var r=confirm("是否打开音乐播放器？");
-		if(r==true)
-		{
-		return "<embed style=\"float:right;margin-right=20px;position:fixed;z-index:1;top:50%;right:0;\" src=\"http://www.xiami.com/widget/9768381_1769745040,1770729861,1774137590,1773750009,1773865494,1770869934,_235_346_5677fc_536dfe_1/multiPlayer.swf\" width=\"235\" type=\"application/x-shockwave-flash\" height=\"346\" align=\"ABSBOTTOM\"></embed>";
-		}
-		else
-		{
-			return "";	
-		}
-	}
-	else
-	{
-		return "";
 	}
 }
 function getCookie(c_name)
@@ -110,15 +85,12 @@ function setCookie(name,value,expiredays)
 }
 function checkCookie()
 {
-	var x=navigator;
-	var ua=x.userAgent;
-	var uaok=ua.indexOf("Android"||"iOS"||"iPad"||"iPhone"||"Windows Phone");
-	if(uaok!=-1)
+	if(returnUserAgent("useragent") == "mobile")
 	{
 		mobileplayer=getCookie("mobileplayer");
 		if(mobileplayer=="true")
 		{
-			return "<audio src=\"http://www.haoyuan.info/music/wacci.mp3\" autoplay=\"autoplay\" controls />";
+			return "<audio src=\"http://www.haoyuan.info/music/wacci.mp3\" autoplay=\"autoplay\" controls></audio>";
 		}	
 		else
 		{
@@ -127,7 +99,7 @@ function checkCookie()
 			{
 				setCookie("mobileplayer","true",10);
 				console.info(unescape(document.cookie));
-				return "<audio src=\"http://www.haoyuan.info/music/wacci.mp3\" autoplay=\"autoplay\" controls />";
+				return "<audio src=\"http://www.haoyuan.info/music/wacci.mp3\" autoplay=\"autoplay\"></audio>";
 			}
 			else if(Okplayer==false)
 			{
@@ -161,7 +133,59 @@ function checkCookie()
 				setCookie("flashplayer","false",10);	
 			}
 		}
-		return useragent();
+	}
+}
+function delCookie()
+{
+	var del=new Date();
+	del.setTime(del.getTime()-1);
+	var cval;
+	if(returnUserAgent("useragent")!="mobile")
+	{
+		cval=getCookie("flashplayer");
+		if(cval!=null) document.cookie="flashplayer="+cval+";expires="+del.toGMTString();
+	}
+	else
+	{
+	  cval=getCookie("mobileplayer");
+	  if(cval!=null) document.cookie= "mobileplayer="+cval+";expires="+del.toGMTString();	
+	}
+	
+}
+function returnUserAgent(action)
+{
+var x=navigator;
+var ua=x.userAgent;
+var isMobile=ua.indexOf("Android"||"iOS"||"iPad"||"iPhone"||"Windows Phone");
+var isIE=ua.indexOf("Internet Explorer");
+var isTrident=ua.indexOf("Trident");
+	if(action=="useragent")
+	{
+if(isMobile!=-1)
+{
+	return "Mobile";	
+}
+if(isIE!=-1)
+{
+	return "IE";
+}
+if(isTrident!=-1)
+{
+	return "Trident";	
+}
+}
+else if(action=="version")
+{
+	console.log(parseFloat(x.appVersion));
+	return parseFloat(x.appVersion);	
+}
+}
+function btncookie()
+{
+	var co=getCookie("mobileplayer")+getCookie("flashplayer");
+	if(co!=""&&co!=null)
+	{
+	return "<a href=\"#\">删除Cookie</a>";
 	}
 }
 /*
