@@ -1,4 +1,3 @@
-<?php header('Content-type: application/x-javascript;charset=utf-8'); ?>
 <?php 
 $url = "http://www.haoyuan.info/twitter/index.php"; //获取内容
 global $contents; 
@@ -45,7 +44,7 @@ else
 {
 	$event_yr=$event_year[0];
 }
-$evn=preg_match("/(春|夏|秋|冬)イベント\S+(?:】)$|(?:は|の|を)/",$eventval,$event_name);
+$evn=preg_match("/(春|夏|秋|冬)イベント\S+(?:】)(?=は|の|を|、)/",$eventval,$event_name);
 if($event_month[0]==""&&$event_date[0]==""&&$event_weekday[0]=="")
 {
 	$event_m="null";
@@ -101,11 +100,6 @@ if($nextmonth[0]=="")
 {
 	$nextmonth[0]="null";
 }
-		/*
-$arr = array ('month'=>$month[0],'date'=>$day[0],'weekday'=>$weekday[0],'hour'=>$hour[0],'minute'=>$minute[0]);
-$jsonval=json_encode($arr);
-$txt="kancolle={month:\"".$month[0]."\",date:\"".$day[0]."\",weekday:\"".$weekday[0]."\",hour:\"".$hour[0]."\",minute:\"".$minute[0]."\"}";
-*/
 //如果使用JSON则启动此段
 ?>
 <?php
@@ -117,6 +111,26 @@ $h-=1;
 */
 ?>
 <?php
+$client=$_GET["client"];
+$help=$_GET["help"];
+if($help=="1"&&$client==""||$client==null)
+{
+	header('Content-Type:text/html; charset=utf-8');
+	echo "<html>";
+	echo "<head><title>API Help Document</title></head><body>";
+	echo "<header align=\"center\"><h1 style=\"align:middle;\">API Document Help file</h1></header><br>\n";
+	echo "<p align=\"center\">====================================<br>==&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;==<br>==&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PHP&nbsp;API&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;==<br>==&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;==<br>==&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;==<br>====================================<br></p>";
+	echo "<p align=\"center\"This is a help file about how to use the PHP API file <code>trace.php</code><br>\n";
+	echo "The val <code>client</code> post the server what your client is.<br>\n";
+	echo "if you want to get this page in <code>desktop</code>,the val <code>client=desktop</code><br>\n";
+	echo "or if you want to get the JavaScript file in your browser,you can post the val<code>client=web</code>And you can get an complete JavaScript file<br>\n";
+	echo "if you want to show this file,you can open this page:<code>trace.php?help=1</code><br></p>\n";
+	echo "<footer align=\"center\"><h1>This PHP file is protected by GPLV2 LICENCE.</h1></footer>";
+	echo "</body></html>";
+}
+if($client=="web")
+{
+header('Content-type: application/x-javascript;charset=utf-8');
 echo "var month=new Number();\n";
 echo "var date=new Number();\n";
 echo "var weekday=new String();\n";
@@ -145,6 +159,34 @@ echo "event_weekday=\"".$event_w."\";\n";
 echo "nextmonth=".$nextmonth[0].";\n";
 echo "nextdate=".$nextdate[0].";\n";
 echo "nextweekday=\"".$nextweekday[0]."\";";
+}
+else if($client=="desktop")
+{
+	header('Content-Type: application/xml; charset=utf-8');
+	echo "<document>";   
+   	echo "<month>".$m."</month>\n";
+	echo "<date>".$dat."</date>\n";
+	echo "<weekday>".$w."</weekday>\n";
+	echo "<hour>".$h."</hour>\n";
+	echo "<minute>".$mi."</minute>\n";
+	echo "<people>".$people."</people>\n";
+	echo "<event_year>".$event_yr."</event_year>\n";
+	echo "<event_name>".$event_name[0]."</event_name>\n";
+	echo "<event_month>".$event_m."</event_month>\n";
+	echo "<event_date>".$event_d."</event_date>\n";
+	echo "<event_weekday>".$event_w."</event_weekday>\n";
+	echo "<nextmonth>".$nextmonth[0]."</nextmonth>\n";
+	echo "<nextdate>".$nextdate[0]."</nextdate>\n";
+	echo "<nextweekday>".$nextweekday[0]."</nextweekday>\n";	
+	echo "</document>";
+}
+else if($client=="json")
+{
+$arr = array ('month'=>$m,'date'=>$dat,'weekday'=>$w,'hour'=>$h,'minute'=>$mi,'people'=>$people,'event_year'=>$event_yr,'event_name'=>$event_name[0],'event_month'=>$event_m,'event_date'=>$event_d,'event_weekday'=>$event_w,'nextmonth'=>$nextmonth[0],'nextdate'=>$nextdate[0],'nextweekday'=>$nextweekday[0]);
+$jsonval=json_encode($arr);
+$txt="kancolle={month:\"".$month[0]."\",date:\"".$day[0]."\",weekday:\"".$weekday[0]."\",hour:\"".$hour[0]."\",minute:\"".$minute[0]."\"}";
+echo $jsonval;	
+}
 ?>
 <?php
 /*

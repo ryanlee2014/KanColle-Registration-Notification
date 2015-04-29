@@ -10,7 +10,7 @@ if(returnUserAgent("useragent") == "IE")
 else
 {
 	text = checkCookie();
-	text += "<div data-role=\"page\" data-theme=\"a\" id=\"home\"><div data-role=\"header\"  style=\"position:fixed;top:0px;right:0px;width:100%;z-index:999\"><h4>";
+	text += "<div data-role=\"page\" data-theme=\"a\" id=\"home\"><div data-role=\"header\"  style=\"position:fixed;top:0px;right:0px;width:100%;z-index:500\"><h4>";
 	if(document.URL.indexOf("v2") == -1)
 	{
 		text += "舰队collection放号时间";
@@ -19,8 +19,7 @@ else
 	{
 		text += "Kantai Collection Notification(Ver1.0)";
 	}
-	text += "<span align=\"right\" class=\"header\" onClick=\"delCookie()\">";
-	text += btncookie();
+	text += "<span id=\"cookie\" align=\"right\" class=\"header\" onClick=\"delCookie()\">";
 	text += "</span></h4>";
 	text +="</div><div data-role=\"navbar\" style=\"position:fixed;margin-top:2.7em;width:100%;\"><ul><li><a href=\"#home\"  data-icon=\"home\">首页</a></li><li><a href=\"#twitter\" data-transition=\"slide\" data-icon=\"arrow-r\">官推截图</a></li></ul></div>";
 	if(document.URL.indexOf("v2") == -1)
@@ -29,6 +28,8 @@ else
 	}
 	text += "\n<div data-role=\"content\" style=\"position:relative;margin-top:5em;\" id=\"time\" data-theme=\"c\"></div>";
 	text += "\n<div data-role=\"content\" id=\"countdown\" data-theme=\"c\" ></div>";
+	text += "<div data-role=\"dialog\" id=\"alert-dialog\"><div data-role=\"header\" data-theme=\"a\"><h1>来自网页的信息</h1></div><div role=\"main\" class=\"ui-content\"><h1>Delete cookie complete!</h1><p align=\"center\">该网页的Cookie已经从您的电脑中删除。</p><a href=\"#home\" data-role=\"button\" data-theme=\"b\" id=\"test\">关闭</a></div></div>";
+	text += btncookie();
 	text += "<br><br><br>";
 	text += "\n<div data-role=\"footer\" style=\"position:fixed;bottom:0px;right:0px;width:100%;\" id=\"footer\"><h1></h1></div></div>";
 	text += "\n<div data-role=\"page\" data-theme=\"a\" id=\"twitter\">";
@@ -143,15 +144,26 @@ function delCookie()
 	if(returnUserAgent("useragent")!="mobile")
 	{
 		cval=getCookie("flashplayer");
-		if(cval!=null) document.cookie="flashplayer="+cval+";expires="+del.toGMTString();
+		if(cval!=null)
+		{
+			 document.cookie="flashplayer="+cval+";expires="+del.toGMTString();
+		}
 	}
 	else
 	{
 	  cval=getCookie("mobileplayer");
 	  if(cval!=null) document.cookie= "mobileplayer="+cval+";expires="+del.toGMTString();	
 	}
-	
 }
+$("a#cookie_a").click(function(){
+	delCookie();
+	$("div#alert-dialog").show();
+	$("a#cookie_a").animate({height:'20px',width:'30px',opacity:'0.4'},"slow");
+$("a#cookie_a").remove();
+})
+$("a#test").click(function(){
+	$("div#alert-dialog").hide();
+})
 function returnUserAgent(action)
 {
 var x=navigator;
@@ -185,7 +197,7 @@ function btncookie()
 	var co=getCookie("mobileplayer")+getCookie("flashplayer");
 	if(co!=""&&co!=null)
 	{
-	return "<a href=\"#\">删除Cookie</a>";
+	return "<a href=\"#alert-dialog\" data-role=\"button\" style=\"width:200px;float:right;top:-23.5em; z-index:999\" id=\"cookie_a\" data-rel=\"dialog\" data-transition=\"pop\">删除Cookie</a>";
 	}
 }
 /*
