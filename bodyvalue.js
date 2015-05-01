@@ -21,14 +21,16 @@ else
 	}
 	text += "<span id=\"cookie\" align=\"right\" class=\"header\" onClick=\"delCookie()\">";
 	text += "</span></h4>";
-	text +="</div><div data-role=\"navbar\" style=\"position:fixed;margin-top:2.7em;width:100%;\"><ul><li><a href=\"#home\"  data-icon=\"home\">首页</a></li><li><a href=\"#twitter\" data-transition=\"slide\" data-icon=\"arrow-r\">官推截图</a></li></ul></div>";
+	text +="</div><div data-role=\"navbar\" style=\"position:fixed;margin-top:2.7em;width:100%;\">";
+	text +="<ul><li>";
+	text +="<a href=\"#home\"  data-icon=\"home\" style=\"float:inhreit;position:fixed;width:50%\">首页</a></li><li><a  style=\"float:inhreit;position:fixed;width:50%\" href=\"#twitter\" data-transition=\"slide\" data-icon=\"arrow-r\">官推截图</a></li></ul></div>";
 	if(document.URL.indexOf("v2") == -1)
 	{
 		text += "<div data-role=\"content\" style=\"margin-top:5em;\"><a href=\"kancollev2.html\" target=\"blank\"><button>此页面已经停止维护,点击此前往新版</button></a></div>";
 	}
 	text += "\n<div data-role=\"content\" style=\"position:relative;margin-top:5em;\" id=\"time\" data-theme=\"c\"></div>";
 	text += "\n<div data-role=\"content\" id=\"countdown\" data-theme=\"c\" ></div>";
-	text += "<div data-role=\"dialog\" id=\"alert-dialog\"><div data-role=\"header\" data-theme=\"a\"><h1>来自网页的信息</h1></div><div role=\"main\" class=\"ui-content\"><h1>Delete cookie complete!</h1><p align=\"center\">该网页的Cookie已经从您的电脑中删除。</p><a href=\"#home\" data-role=\"button\" data-theme=\"b\" id=\"test\">关闭</a></div></div>";
+	text += "<div data-role=\"dialog\" id=\"alert-dialog\" style=\"margin-top:2em;\"><div data-role=\"header\" data-theme=\"a\"><h1>来自网页的信息</h1></div><div role=\"main\" class=\"ui-content\" style=\"background-color:#ffffff;\"><h1>Delete cookie complete!</h1><p align=\"center\" style=\"opacity:1;\">该网页的Cookie已经从您的电脑中删除。</p><a href=\"#home\" data-role=\"button\" data-theme=\"b\" id=\"test\">关闭</a></div></div>";
 	text += btncookie();
 	text += "<br><br><br>";
 	text += "\n<div data-role=\"footer\" style=\"position:fixed;bottom:0px;right:0px;width:100%;\" id=\"footer\"><h1></h1></div></div>";
@@ -86,7 +88,7 @@ function setCookie(name,value,expiredays)
 }
 function checkCookie()
 {
-	if(returnUserAgent("useragent") == "mobile")
+	if(returnUserAgent("useragent") == "Mobile")
 	{
 		mobileplayer=getCookie("mobileplayer");
 		if(mobileplayer=="true")
@@ -171,8 +173,8 @@ var ua=x.userAgent;
 var isMobile=ua.indexOf("Android"||"iOS"||"iPad"||"iPhone"||"Windows Phone");
 var isIE=ua.indexOf("Internet Explorer");
 var isTrident=ua.indexOf("Trident");
-	if(action=="useragent")
-	{
+if(action=="useragent")
+{
 if(isMobile!=-1)
 {
 	return "Mobile";	
@@ -197,7 +199,7 @@ function btncookie()
 	var co=getCookie("mobileplayer")+getCookie("flashplayer");
 	if(co!=""&&co!=null)
 	{
-	return "<a href=\"#alert-dialog\" data-role=\"button\" style=\"width:200px;float:right;top:-23.5em; z-index:999\" id=\"cookie_a\" data-rel=\"dialog\" data-transition=\"pop\">删除Cookie</a>";
+	return "<a href=\"#alert-dialog\" data-role=\"button\" style=\"width:100px;float:right;top:-27em; z-index:999\" id=\"cookie_a\" data-rel=\"dialog\" data-transition=\"pop\">删除Cookie</a>";
 	}
 }
 /*

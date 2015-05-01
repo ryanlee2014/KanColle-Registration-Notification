@@ -1,5 +1,5 @@
 <?php 
-$url = "http://www.haoyuan.info/twitter/index.php"; //获取内容
+$url = "http://".$_SERVER['HTTP_HOST']."/twitter/index.php"; //获取内容
 global $contents; 
 $contents = file_get_contents($url); 
 //如果出现中文乱码使用下面代码 
@@ -7,11 +7,11 @@ $contents = file_get_contents($url);
 //echo $contents;
 ?> 
 <?php
-$notimepart="/：【\d+\/\d+\(\S+\)\】/";//没有小时的正则表达式
-$nexttime="/\d+\/\d+\(\S*曜日\)\s*\d+:\d+(?=】)/";//catch all
+$notimepart="/：【\d+\/\d+\(\S+\)(\S*)\】/";//没有小时的正则表达式
+$nexttime="/\d+\/\d+\(\S*曜日\)\s*\d+:\d+(\s*)(?=】)/";//catch all
 $li="/\d+\S\d+(?=名】)/";
 $comma="/\d+(?=,)\d+/";
-$ne=preg_match("/(?:日【)\d+\S+(?:】)\S*(?=に|以)/",$contents,$next);
+$ne=preg_match("/(?:日)*(?:【)\d+\S+(?:】)\S*(?=に|以)/",$contents,$next);
 $nemo=preg_match("/\d+/",$next[0],$nextmonth);
 $neda=preg_match("/\d{1,2}(?=\()/",$next[0],$nextdate);
 $newe=preg_match("/\S{3}曜日/",$next[0],$nextweekday);
@@ -32,6 +32,8 @@ $week=preg_match("/\S{3}曜日/",$nval[0],$weekday);
 $ho=preg_match("/\d+(?=:)/",$nval[0],$hour);
 $min=preg_match("/\d+$/",$nval[0],$minute);
 $people=$pe[0];
+?>
+<?php
 //活动设定
 $eve=preg_match("/(春|夏|秋|冬)イベント\S+(?:】)/",$contents,$event);
 $eventval=$event[0];
@@ -113,19 +115,34 @@ $h-=1;
 <?php
 $client=$_GET["client"];
 $help=$_GET["help"];
-if($help=="1"&&$client==""||$client==null)
+$val=$_GET["val"];
+if($client==""&&$help==""&&$val=="")
 {
 	header('Content-Type:text/html; charset=utf-8');
-	echo "<html>";
-	echo "<head><title>API Help Document</title></head><body>";
-	echo "<header align=\"center\"><h1 style=\"align:middle;\">API Document Help file</h1></header><br>\n";
-	echo "<p align=\"center\">====================================<br>==&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;==<br>==&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PHP&nbsp;API&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;==<br>==&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;==<br>==&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;==<br>====================================<br></p>";
-	echo "<p align=\"center\"This is a help file about how to use the PHP API file <code>trace.php</code><br>\n";
+	echo "<html><head><title>参数错误</title></head><body>";
+	echo "<p align=\"center\"><h1>您没有返回正确的参数，请参阅<a href=\"trace.php?help=1\">API Document</a>查阅该PHP API使用参数</h1></p></body></html>";	
+}
+if($help=="1"&&($client==""||$client==null))
+{
+	header('Content-Type:text/html; charset=utf-8');
+	echo "<!doctype html><html>";
+	echo "<head><title>API Help Document</title><style>";
+	echo "code {";
+	echo "background-color:#f1f1f1;";
+	echo "border:1px groove;";
+	echo "border-radius:15px 15px 15px 15px;";
+	echo "box-shadow: 2px 2px 1px #e1e1e1;";
+	echo "}</style>";
+	echo "</head><body>";
+	echo "<header><h1>API Document Help file</h1></header><br>\n";
+	echo "<p>====================================<br>==&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;==<br>==&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PHP&nbsp;API&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;==<br>==&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;==<br>==&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;==<br>====================================<br></p>";
+	echo "<p>This is a help file about how to use the PHP API file <code>trace.php</code><br>\n";
 	echo "The val <code>client</code> post the server what your client is.<br>\n";
-	echo "if you want to get this page in <code>desktop</code>,the val <code>client=desktop</code><br>\n";
+	echo "if you want to get this page in <code>XML</code>,the val <code>client=xml</code><br>\n";
 	echo "or if you want to get the JavaScript file in your browser,you can post the val<code>client=web</code>And you can get an complete JavaScript file<br>\n";
 	echo "if you want to show this file,you can open this page:<code>trace.php?help=1</code><br></p>\n";
-	echo "<footer align=\"center\"><h1>This PHP file is protected by GPLV2 LICENCE.</h1></footer>";
+	echo "<footer><h1>This PHP file is protected by ";
+	echo "<a href=\"https://github.com/ryanlee2014/KanColle-Registration-Notification/blob/master/LICENCE\" target=\"_blank\">GPLV2 LICENCE</a>.</h1></footer>";
 	echo "</body></html>";
 }
 if($client=="web")
@@ -160,7 +177,7 @@ echo "nextmonth=".$nextmonth[0].";\n";
 echo "nextdate=".$nextdate[0].";\n";
 echo "nextweekday=\"".$nextweekday[0]."\";";
 }
-else if($client=="desktop")
+else if($client=="xml")
 {
 	header('Content-Type: application/xml; charset=utf-8');
 	echo "<document>";   
@@ -182,10 +199,31 @@ else if($client=="desktop")
 }
 else if($client=="json")
 {
+header('Content-type: application/json;charset=utf-8;');
 $arr = array ('month'=>$m,'date'=>$dat,'weekday'=>$w,'hour'=>$h,'minute'=>$mi,'people'=>$people,'event_year'=>$event_yr,'event_name'=>$event_name[0],'event_month'=>$event_m,'event_date'=>$event_d,'event_weekday'=>$event_w,'nextmonth'=>$nextmonth[0],'nextdate'=>$nextdate[0],'nextweekday'=>$nextweekday[0]);
 $jsonval=json_encode($arr);
 $txt="kancolle={month:\"".$month[0]."\",date:\"".$day[0]."\",weekday:\"".$weekday[0]."\",hour:\"".$hour[0]."\",minute:\"".$minute[0]."\"}";
 echo $jsonval;	
+}
+else if($client==""&&$help==""&&$val!="")
+{
+	header('Content-Type: application/x-javascript;charset=utf-8;');
+	if($val=="nextmonth")
+	{
+		echo "nextmonth=".$nextmonth[0];	
+	}	
+	if($val=="next")
+	{
+		echo "String next=".$next[0];;	
+	}
+	if($val=="nval")
+	{
+		echo "nval=".$nval[0];;	
+	}
+	if($val="root")
+	{
+		echo $_SERVER['HTTP_HOST'];
+	}
 }
 ?>
 <?php
