@@ -28,6 +28,14 @@ function Convert(str)
 	{
 		return "星期六";
 	}
+	if(str == "祝日")
+	{
+		return "节假日";
+	}
+	if(str == "振替休日")
+	{
+		return "补休假期";
+	}
 }
 
 function getMonthSec(month)

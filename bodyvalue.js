@@ -17,7 +17,7 @@ else
 	}
 	else
 	{
-		text += "Kantai Collection Notification(Ver1.0)";
+		text += "Kantai Collection Notification(Ver1.2)";
 	}
 	text += "<span id=\"cookie\" align=\"right\" class=\"header\" onClick=\"delCookie()\">";
 	text += "</span></h4>";
@@ -199,7 +199,7 @@ function btncookie()
 	var co=getCookie("mobileplayer")+getCookie("flashplayer");
 	if(co!=""&&co!=null)
 	{
-	return "<a href=\"#alert-dialog\" data-role=\"button\" style=\"width:100px;float:right;top:-27em; z-index:999\" id=\"cookie_a\" data-rel=\"dialog\" data-transition=\"pop\">删除Cookie</a>";
+	return "<a href=\"#alert-dialog\" data-role=\"button\" style=\"position:fixed;width:100px;float:right;left:75.5em;top:7em; z-index:999\" id=\"cookie_a\" data-rel=\"dialog\" data-transition=\"pop\">删除Cookie</a>";
 	}
 }
 /*

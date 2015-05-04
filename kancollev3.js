@@ -1,8 +1,8 @@
-console.time("running kancollev3.js use time");
-_screenwidth("ifm");
-remindTimezoneChange();
-maincore();
-
+console.time("running kancollev3.js use time");//V8 console控制台调用
+_screenwidth("ifm");//窗口大小调用
+remindTimezoneChange();//时区调用
+maincore();//主要功能调用
+//函数部分
 function maincore()
 {
 	var txt = new String();
@@ -15,7 +15,7 @@ function maincore()
 		}
 		else
 		{
-			txt = "<br>下次抢号时间为:<h3>" + month + "月" + date + "日&nbsp;&nbsp;&nbsp;&nbsp;(" + Convert(weekday) + ")&nbsp&nbsp&nbsp;<br>抢号时间:GMT" + reTimezone() + "&nbsp;&nbsp;" + Timezone(hour) + ":" + seczero(minute) + "<br>放号名额为:" + comma(people, ",") + "名</h3>";
+			txt = "<br>下次抢号时间为:<h3>" + month + "月" + date + "日&nbsp;&nbsp;&nbsp;&nbsp;(" + Convert(weekday) + ")&nbsp&nbsp&nbsp;<br>抢号时间:UTC" + reTimezone() + "&nbsp;&nbsp;" + Timezone(hour) + ":" + seczero(minute) + "<br>放号名额为:" + comma(people, ",") + "名</h3>";
 		}
 	}
 	else if(timepast(month, date, hour, minute) == 0)
@@ -25,10 +25,11 @@ function maincore()
 	else if(timepast(month, date, hour, minute) == 1)
 	{
 		txt = "<br>本次抢号活动已经结束，若抢号未成功，请等待下一次的官方抢号时间.<br>";
-		txt += "<span class=\"black\">上一次</span>的抢号时间为:<h3>" + month + "月" + date + "日&nbsp;&nbsp;&nbsp;&nbsp;(" + Convert(weekday) + ")&nbsp&nbsp&nbsp;<br>抢号时间:GMT" + reTimezone() + "&nbsp;&nbsp;" + Timezone(hour) + ":" + seczero(minute) + "<br>放号名额为:" + comma(people, ",") + "名<br><br>下一次抢号时间为<br>" + nextmonth + "月" + nextdate + "日&nbsp;&nbsp;(" + Convert(nextweekday) + ")</h3>";
+		txt += "<span class=\"black\">上一次</span>的抢号时间为:<h3>" + month + "月" + date + "日&nbsp;&nbsp;&nbsp;&nbsp;(" + Convert(weekday) + ")&nbsp&nbsp&nbsp;<br>抢号时间:UTC" + reTimezone() + "&nbsp;&nbsp;" + Timezone(hour) + ":" + seczero(minute) + "<br>放号名额为:" + comma(people, ",") + "名<br><br>下一次抢号时间为<br>" + nextmonth + "月" + nextdate + "日&nbsp;&nbsp;(" + Convert(nextweekday) + ")</h3>";
 		console.info("%cTimepast function output code:" + timepast(month, date, hour, minute), "font-size:18px");
 		console.warn("Time up");
 	}
+	txt += "<h4>"+_time()+"</h4>";
 	if(event_year != "" && event_year != null && event_name != "")
 	{
 		txt += "<h4>当前活动:" + event_year + "年【" + comma(event_name, "[【】]") + "】</h4>";
@@ -45,22 +46,42 @@ function maincore()
 		console.warn("No event was showed!");
 		console.warn("活动时间" + event_year + "活动名" + event_name);
 	}
+	if(event_date!=event_end_date)
+	{
 	if(event_month != null && event_date != null)
 	{
 		txt += "<h4>活动开始时间:" + event_month + "月" + event_date + "日 (" + Convert(event_weekday) + ")</h4>";
 	}
+	}
+	if(event_end_month!=null&&event_end_date!=null)
+	{
+		txt += "<h4>活动结束时间:" + event_end_month + "月" + event_end_date + "日 (" + Convert(event_end_weekday) + ")</h4>";	
+	}
 	console.info("%cTimepast code:" + timepast(month, date, hour, minute), "font-size:24px");
 	var dom_time = document.getElementById("time");
 	dom_time.innerHTML = txt;
+	setTimeout("maincore()", 1000);
 }
+//上部分需要进行函数化，代码过于冗长
 console.timeEnd("running kancollev3.js use time");
-//函数部分
+//当前时间
+function _time()
+{
+	var time=new Date();
+	var _year=time.getYear()+1900;
+	var _month=time.getMonth()+1;
+	var _date=time.getDate();
+	var _hour=time.getHours();
+	var _minute=time.getMinutes();
+	var _second=time.getSeconds();
+	return "现在的时间:"+	_year+"年"+_month+"月"+_date+"日"+_hour+"时"+seczero(_minute)+"分"+seczero(_second)+"秒";
+}
 //时区
 function remindTimezoneChange()
 {
 	var v = new Date();
-	var timezone = v.getTimezoneOffset() / 60;
-	if(timezone != -9)
+	var _timezone = v.getTimezoneOffset() / 60;
+	if(_timezone != -9)
 	{
 		alert("您的电脑时区不是日本时区，若需要抢号请将电脑时区更改为日本东京时区");
 	}
@@ -70,8 +91,8 @@ function remindTimezoneChange()
 function Timezone(hour)
 {
 	var a = new Date();
-	var timezone = a.getTimezoneOffset() / 60;
-	var h = hour + (-8 - timezone);
+	var timezone = parseInt(a.getTimezoneOffset() / 60);
+	var _hour = hour + (-9 - timezone);
 	if(timezone != -9)
 	{
 		console.log("您的电脑时区不是日本时区，若需要抢号请将电脑时区更改为日本东京时区");
@@ -80,7 +101,7 @@ function Timezone(hour)
 	{
 		console.log("Timezone:%cJapan", "font-size:21px");
 	}
-	return h;
+	return _hour;
 }
 //时区--UTF
 function reTimezone()
@@ -107,7 +128,7 @@ function timepast(month, date, hour, minute)
 	var nd = d.getDate();
 	var nh = d.getHours();
 	var nmi = d.getMinutes();
-	console.log("%cMonth:" + month + " Date:" + date + " Hour:" + hour + " Minute:" + minute, "font-size:21px;");
+	console.log("%cMonth:" + month + " Date:" + date + " Hour:" + Timezone(hour) + " Minute:" + minute, "font-size:21px;");
 	if(maxnum(nm, month) && maxnum(nd, date))
 	{
 		console.info("Compare month and date complete!");
