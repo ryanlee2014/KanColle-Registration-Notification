@@ -60,7 +60,10 @@ function maincore()
 	console.info("%cTimepast code:" + timepast(month, date, hour, minute), "font-size:24px");
 	var dom_time = document.getElementById("time");
 	dom_time.innerHTML = txt;
+	if(!mobile())
+	{
 	setTimeout("maincore()", 1000);
+	}
 }
 //上部分需要进行函数化，代码过于冗长
 console.timeEnd("running kancollev3.js use time");
@@ -269,4 +272,18 @@ function comma(str, regexp)
 	console.log("%cRegExp code:" + reg, "font-size:24px;");
 	console.log("RegExp replace succeed");
 	return x;
+}
+function mobile()
+{
+var x=navigator;
+var ua=x.userAgent;
+var isMobile=ua.indexOf("Android"||"iOS"||"iPad"||"iPhone"||"Windows Phone");
+if(isMobile!=-1)
+{
+	return true;	
+}
+else
+{
+	return false;	
+}
 }

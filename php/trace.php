@@ -9,27 +9,27 @@ $contents = file_get_contents($url);
 <?php
 //功能实现正则
 $notimepart="/：【\d+\/\d+\(\S+\)(\S*)\】/";//没有小时的正则表达式
-$nexttime="/\d+\/\d+\(\D*(曜)*日\)\s*\d+:\d+(\s*)(?=】)/";//catch all
+$nexttime="/\d+\/\d+\([\x80-\xff]*(曜)*日\)\s*\d+:\d+(\s*)(?=】)/";//catch all
 $li="/\d+\S\d+(?=名】)/";
 $comma="/\d+(?=,)\d+/";
 $ne=preg_match("/(?:日)*(?:【)\d+\S+(?:】)\S*(?=に|以)/",$contents,$next);
 $nemo=preg_match("/\d+/",$next[0],$nextmonth);
 $neda=preg_match("/\d{1,2}(?=\()/",$next[0],$nextdate);
-$newe=preg_match("/\D{1,9}(曜)*日/",$next[0],$nextweekday);
+$newe=preg_match("/[\x80-\xff]{1,9}(曜)*日/",$next[0],$nextweekday);
 $evti=preg_match("/<p>(?:\S+)?(?=イベント)\S+(?:【)(\d+)\S\d+\S+(?:】)(?=\S+)/",$contents,$event_time);
 $evti_=preg_match("/\d{1,2}(?=\/)/",$event_time[0],$event_month);
 $evti_1=preg_match("/\d{1,2}(?=\()/",$event_time[0],$event_date);
-$event_wee=preg_match("/(?![\(\)])\D{1,5}(曜)*日/",$event_time[0],$event_weekday);
+$event_wee=preg_match("/(?![\(\)])[\x80-\xff]{1,5}(曜)*日/",$event_time[0],$event_weekday);
 $count=preg_match($li,$contents,$pe);
 $netim=preg_match($nexttime,$contents,$nval);
 $ntp=preg_match($notimepart,$contents,$nowtimepart);
 $_mon=preg_match("/\d{1,2}/",$nowtimepart[0],$_month);
 $_da=preg_match("/\d{1,2}(?=\()/",$nowtimepart[0],$_date);
-$_weekd=preg_match("/\D{1,5}?(曜)*日/",$nowtimepart[0],$_weekday);
+$_weekd=preg_match("/[\x80-\xff]{1,9}?(曜)*日/",$nowtimepart[0],$_weekday);
 $text=preg_match($part,$contents,$matches);
 $mon=preg_match("/\d+(?=\/)/",$nval[0],$month);
 $da=preg_match("/\d{1,2}(?=\()/",$nval[0],$day);
-$week=preg_match("/(?![\(\)])\D{1,6}?(曜)*日/",$nval[0],$weekday);
+$week=preg_match("/(?![\(\)])[\x80-\xff]{1,9}(曜)*日/",$nval[0],$weekday);
 $ho=preg_match("/\d+(?=:)/",$nval[0],$hour);
 $min=preg_match("/\d+$/",$nval[0],$minute);
 $people=$pe[0];
@@ -43,7 +43,7 @@ $evend=preg_match("/(?:期間は【)(\S|\s){1,30}(?=】)/",$contents,$event_end)
 $evn=preg_match("/(春|夏|秋|冬)イベント\S+(?:】)(?=は|の|を|、)/",$contents,$event_name);
 $evnm=preg_match("/\d{1,2}/",$event_end[0],$event_end_month);
 $evnd=preg_match("/\d{1,2}(?=\()/",$event_end[0],$event_end_date);
-$evew=preg_match("/\D{1,3}?(曜)*日/",$event_end[0],$event_end_weekday);
+$evew=preg_match("/[\x80-\xff]{1,3}?(曜)*日/",$event_end[0],$event_end_weekday);
 if($event_year[0]=="")
 {
 	$event_yr="null";

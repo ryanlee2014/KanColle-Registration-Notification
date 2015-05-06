@@ -46,7 +46,7 @@ else
 }
 document.write(text);
 footer = document.getElementById("footer");
-var copyright = "<p align=\"center\">抢号时间脚本由<span class=\"bold\">本站</span>提供,判断逻辑由<span class=\"author\">Ryan</span>编写</p>";
+var copyright = "<p align=\"center\">抢号时间脚本由<span class=\"bold\">本站</span>提供,判断逻辑由<span class=\"author\">Ryan</span>编写,源代码 ===><span class=\"bold\"><a href=\"https://github.com/ryanlee2014/KanColle-Registration-Notification/\" target=\"_blank\">Kantai-Collection-Notification</a></span></p>";
 footer.innerHTML = copyright;
 console.log("footer is completed");
 var footer_1 = document.getElementById("footer_1");
@@ -199,7 +199,7 @@ function btncookie()
 	var co=getCookie("mobileplayer")+getCookie("flashplayer");
 	if(co!=""&&co!=null)
 	{
-	return "<a href=\"#alert-dialog\" data-role=\"button\" style=\"position:fixed;width:100px;float:right;left:75.5em;top:7em; z-index:999\" id=\"cookie_a\" data-rel=\"dialog\" data-transition=\"pop\">删除Cookie</a>";
+	return "<a href=\"#alert-dialog\" data-role=\"button\" style=\"position:fixed;width:100px;float:right;right:1em;top:7em; z-index:999\" id=\"cookie_a\" data-rel=\"dialog\" data-transition=\"pop\">删除Cookie</a>";
 	}
 }
 /*

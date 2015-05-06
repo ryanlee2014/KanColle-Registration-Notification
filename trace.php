@@ -16,7 +16,7 @@ $comma="/\d+(?=,)\d+/";
 $ne=preg_match("/\d+\S+(?:】)\S*(?=に|以)/",$contents,$next);
 $nemo=preg_match("/\d+/",$next[0],$nextmonth);
 $neda=preg_match("/\d{1,2}(?=\()/",$next[0],$nextdate);
-$newe=preg_match("/\S{3}曜日/",$next[0],$nextweekday);
+$newe=preg_match("/[\x80-\xff]+(曜)*日/",$next[0],$nextweekday);
 $evti=preg_match("/<p>(?:\S+)(?=イベント)\S+(?:【)(\d+)\S\d+\S+(?:】)(?=\S+)/",$contents,$event_time);
 $evti_=preg_match("/\d{1,2}(?=\/)/",$event_time[0],$event_month);
 $evti_1=preg_match("/\d{1,2}(?=\()/",$event_time[0],$event_date);
