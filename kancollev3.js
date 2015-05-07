@@ -6,6 +6,7 @@ maincore();//主要功能调用
 function maincore()
 {
 	var txt = new String();
+	var g = new Date();
 	if(timepast(month, date, hour, minute) == -1)
 	{
 		if(hour == null && minute == null)
@@ -26,48 +27,52 @@ function maincore()
 	{
 		txt = "<br>本次抢号活动已经结束，若抢号未成功，请等待下一次的官方抢号时间.<br>";
 		txt += "<span class=\"black\">上一次</span>的抢号时间为:<h3>" + month + "月" + date + "日&nbsp;&nbsp;&nbsp;&nbsp;(" + Convert(weekday) + ")&nbsp&nbsp&nbsp;<br>抢号时间:UTC" + reTimezone() + "&nbsp;&nbsp;" + Timezone(hour) + ":" + seczero(minute) + "<br>放号名额为:" + comma(people, ",") + "名<br><br>下一次抢号时间为<br>" + nextmonth + "月" + nextdate + "日&nbsp;&nbsp;(" + Convert(nextweekday) + ")</h3>";
-		console.info("%cTimepast function output code:" + timepast(month, date, hour, minute), "font-size:18px");
 		console.warn("Time up");
 	}
 	txt += "<h4>"+_time()+"</h4>";
 	if(event_year != "" && event_year != null && event_name != "")
 	{
 		txt += "<h4>当前活动:" + event_year + "年【" + comma(event_name, "[【】]") + "】</h4>";
-		console.info("Event showed completed!");
 	}
 	else if(event_year == null && event_name != "")
 	{
-		var g = new Date();
 		txt += "<h4>当前活动:" + (Number(g.getYear()) + 1900) + "年【" + comma(event_name, "[【】]") + "】</h4>";
-		console.info("Event showed completed but no year data posted!");
 	}
-	else
-	{
-		console.warn("No event was showed!");
-		console.warn("活动时间" + event_year + "活动名" + event_name);
-	}
-	if(event_date!=event_end_date)
-	{
-	if(event_month != null && event_date != null)
-	{
-		txt += "<h4>活动开始时间:" + event_month + "月" + event_date + "日 (" + Convert(event_weekday) + ")</h4>";
-	}
-	}
-	if(event_end_month!=null&&event_end_date!=null)
-	{
-		txt += "<h4>活动结束时间:" + event_end_month + "月" + event_end_date + "日 (" + Convert(event_end_weekday) + ")</h4>";	
-	}
-	console.info("%cTimepast code:" + timepast(month, date, hour, minute), "font-size:24px");
+	txt += _event();
 	var dom_time = document.getElementById("time");
 	dom_time.innerHTML = txt;
 	if(!mobile())
 	{
-	setTimeout("maincore()", 1000);
+	setTimeout("maincore()", 1000);//递归
 	}
 }
 //上部分需要进行函数化，代码过于冗长
 console.timeEnd("running kancollev3.js use time");
+//console output
+function console_activity()
+{
+	console.info("%cTimepast function output code:" + timepast(month, date, hour, minute), "font-size:18px");
+	console.info("Event showed completed!");
+	console.warn("活动时间" + event_year + "活动名" + event_name);
+	console.log("%cMonth:" + month + " Date:" + date + " Hour:" + Timezone(hour) + " Minute:" + minute, "font-size:21px;");
+}
 //当前时间
+function _event()
+{
+	var _eventtxt=new String();
+	if(event_date!=event_end_date)
+	{
+	if(event_month != null && event_date != null)
+	{
+		_eventtxt += "<h4>活动开始时间:" + event_month + "月" + event_date + "日 (" + Convert(event_weekday) + ")</h4>";
+	}
+	}
+	if(event_end_month!=null&&event_end_date!=null)
+	{
+		_eventtxt += "<h4>活动结束时间:" + event_end_month + "月" + event_end_date + "日 (" + Convert(event_end_weekday) + ")</h4>";	
+	}
+	return _eventtxt;
+}
 function _time()
 {
 	var time=new Date();
@@ -86,7 +91,7 @@ function remindTimezoneChange()
 	var _timezone = v.getTimezoneOffset() / 60;
 	if(_timezone != -9)
 	{
-		alert("您的电脑时区不是日本时区，若需要抢号请将电脑时区更改为日本东京时区");
+		alert("您的电脑时区不是日本时区\n若需要抢号请将电脑时区更改为日本东京时区");
 	}
 
 }
@@ -96,14 +101,6 @@ function Timezone(hour)
 	var a = new Date();
 	var timezone = parseInt(a.getTimezoneOffset() / 60);
 	var _hour = hour + (-9 - timezone);
-	if(timezone != -9)
-	{
-		console.log("您的电脑时区不是日本时区，若需要抢号请将电脑时区更改为日本东京时区");
-	}
-	else
-	{
-		console.log("Timezone:%cJapan", "font-size:21px");
-	}
 	return _hour;
 }
 //时区--UTF
@@ -131,11 +128,8 @@ function timepast(month, date, hour, minute)
 	var nd = d.getDate();
 	var nh = d.getHours();
 	var nmi = d.getMinutes();
-	console.log("%cMonth:" + month + " Date:" + date + " Hour:" + Timezone(hour) + " Minute:" + minute, "font-size:21px;");
 	if(maxnum(nm, month) && maxnum(nd, date))
 	{
-		console.info("Compare month and date complete!");
-		console.log(nh * 60 + nmi - hour * 60 - minute)
 		if(hour == null && minute == null)
 		{
 			return -1;
@@ -145,17 +139,13 @@ function timepast(month, date, hour, minute)
 			if(nh * 60 + nmi < hour * 60 + minute)
 			{
 				return -1;
-				console.warn("hour>nowhour");
-				console.log(nh * 60 + nmi - hour * 60 - minute)
 			}
 			else if(nh * 60 + nmi <= hour * 60 + minute + 60)
 			{
 				return 0;
-				console.warn("hour plus one >nowhour");
 			}
 			else
 			{
-				console.info("hour is gone!");
 				return 1;
 			}
 		}
@@ -240,15 +230,10 @@ function timecount(month, date, hour, minute)
 			}
 			t = setTimeout("timecount(month,date,hour,minute)", 1000);
 		}
-		else
-		{
-			//console.log("Time has past");
-		}
 	}
 	else
 	{
 		htmlo.innerHTML = "<h4>距离抢号时间还有" + (date - nd) + "日</h4>";
-		//console.log("Time didn't get from 'trace.php',if it didn't work,please check");
 	}
 }
 //倒计时显示相关
@@ -269,8 +254,6 @@ function comma(str, regexp)
 	var reg = new RegExp(regexp, "g");
 	var x = str;
 	x = x.replace(reg, "");
-	console.log("%cRegExp code:" + reg, "font-size:24px;");
-	console.log("RegExp replace succeed");
 	return x;
 }
 function mobile()

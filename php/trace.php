@@ -122,23 +122,23 @@ if($help=="1"&&($client==""||$client==null))
 {
 	//API Help Document
 	header('Content-Type:text/html; charset=utf-8');
-	echo "<!doctype html><html>";
-	echo "<head><title>API Help Document</title><style>";
-	echo "code {";
-	echo "background-color:#f1f1f1;";
+	echo "<!doctype html>\n<html>\n";
+	echo "<head>\n<title>\nAPI Help Document</title>\n<style>\n";
+	echo "code\n {";
+	echo "\nbackground-color:#f1f1f1;\n";
 	//echo "border:1px groove;";
-	echo "border-radius:15px 15px 15px 15px;";
-	echo "box-shadow: 2px 2px 1px #e1e1e1;";
-	echo "}</style>";
-	echo "</head><body>";
-	echo "<header><h1>API Document Help file</h1></header><br>\n";
-	echo "<p>====================================<br>==&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;==<br>==&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PHP&nbsp;API&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;==<br>==&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;==<br>==&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;==<br>====================================<br></p>";
-	echo "<p>This is a help file about how to use the PHP API file <code>trace.php</code><br>\n";
+	echo "border-radius:15px 15px 15px 15px;\n";
+	echo "box-shadow: 2px 2px 1px #e1e1e1;\n";
+	echo "}\n</style>\n";
+	echo "</head>\n<body>\n";
+	echo "<header>\n<h1>\nAPI Document Help file\n</h1>\n</header>\n<br>\n";
+	echo "<p>====================================<br>\n==&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;==<br>\n==&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PHP&nbsp;API&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;==<br>\n==&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;==<br>\n==&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;==<br>\n====================================<br>\n</p>\n";
+	echo "<p>This is a help file about how to use the PHP API file <code>trace.php</code>\n<br>\n";
 	echo "The val <code>client</code> post the server what your client is.<br>\n";
-	echo "if you want to get this page in <code>XML</code>,the val <code>client=xml</code><br>\n";
+	echo "if you want to get this page in <code>XML</code>,the val <code>client=xml</code>\n<br>\n";
 	echo "and this is a xml demo:<br>\n";
 	echo "
-<code><strong>&lt;document&gt;<br>
+<code>\n<strong>\n&lt;document&gt;<br>
 &lt;month&gt;5&lt;/month&gt;<br>
 &lt;date&gt;2&lt;/date&gt;<br>
 &lt;weekday&gt;土曜日&lt;/weekday&gt;<br>
@@ -156,12 +156,12 @@ if($help=="1"&&($client==""||$client==null))
 &lt;event_end_month&gt;5&lt;/event_end_month&gt;<br>
 &lt;event_end_date&gt;18&lt;/event_end_date&gt;<br>
 &lt;event_end_weekday&gt;月曜日&lt;/event_end_weekday&gt;<br>
-&lt;/document&gt;</strong></code><br>";
+&lt;/document&gt;</strong>\n</code>\n<br>\n";
 	echo "or if you want to get the JavaScript file in your browser,you can post the val<code>client=web</code>And you can get an complete JavaScript file<br>\n";
 	echo "if you want to show this file,you can open this page:<code>trace.php?help=1</code><br></p>\n";
-	echo "<footer><h1>This PHP file is protected by ";
-	echo "<a href=\"https://github.com/ryanlee2014/KanColle-Registration-Notification/blob/master/LICENCE\" target=\"_blank\">GPLV2 LICENCE</a>.</h1></footer>";
-	echo "</body></html>";
+	echo "<footer>\n<h1>This PHP file is protected by ";
+	echo "\n<a href=\"https://github.com/ryanlee2014/KanColle-Registration-Notification/blob/master/LICENCE\" target=\"_blank\">GPLV2 LICENCE</a>\n</h1>\n</footer>\n";
+	echo "</body>\n</html>";
 }
 if($client=="web")
 {
@@ -180,7 +180,7 @@ echo "var event_date=new Number();\n";
 echo "var event_weekday=new String();\n";
 echo "var nextmonth=new Number();\n";
 echo "var nextdate=new Number();\n";
-echo "var nextweekday=new String()\n";
+echo "var nextweekday=new String();\n";
 echo "var event_end_month=new Number();\n";
 echo "var event_end_date=new Number();\n";
 echo "var event_end_weekday=new String();\n";
@@ -275,9 +275,12 @@ else if($client==""&&$help==""&&$val!="")
 else
 {
 	//错误区域
+	if($help!="1")
+	{
 	header('Content-Type:text/html; charset=utf-8');
 	echo "<html><head><title>参数错误</title></head><body>";
 	echo "<p align=\"center\"><h1>您没有返回正确的参数，请参阅<a href=\"trace.php?help=1\">API Document</a>查阅该PHP API使用参数</h1></p></body></html>";	
+	}
 }
 
 ?>

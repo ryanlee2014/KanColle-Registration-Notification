@@ -17,7 +17,7 @@ else
 	}
 	else
 	{
-		text += "Kantai Collection Notification(Ver1.2)";
+		text += "Kantai Collection Notification(Ver1.3)";
 	}
 	text += "<span id=\"cookie\" align=\"right\" class=\"header\" onClick=\"delCookie()\">";
 	text += "</span></h4>";
