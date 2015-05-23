@@ -1,35 +1,45 @@
 console.time("running kancollev3.js use time");//V8 console控制台调用
 _screenwidth("ifm");//窗口大小调用
 remindTimezoneChange();//时区调用
-maincore();//主要功能调用
+maincore(0);//主要功能调用
+nowtime();
+XMLRefresh();
 //函数部分
-function maincore()
+function maincore(readycode)
 {
 	var txt = new String();
 	var g = new Date();
+	txt = "";
 	if(timepast(month, date, hour, minute) == -1)
 	{
 		if(hour == null && minute == null)
 		{
-			txt = "<br>下次抢号时间为:<h3>" + month + "月" + date + "日&nbsp;&nbsp;&nbsp;&nbsp;(" + Convert(weekday) + ")&nbsp&nbsp&nbsp;" + "<br>放号名额为:" + comma(people, ",") + "名</h3>";
+			txt += "<br>下次抢号时间为:<h3>" + month + "月" + date + "日&nbsp;&nbsp;&nbsp;&nbsp;(" + Convert(weekday) + ")&nbsp&nbsp&nbsp;" + "<br>放号名额为:" + comma(people, ",") + "名</h3>";
 			txt += "<h2>官方尚未公开具体抢号时间</h2>";
 		}
 		else
 		{
-			txt = "<br>下次抢号时间为:<h3>" + month + "月" + date + "日&nbsp;&nbsp;&nbsp;&nbsp;(" + Convert(weekday) + ")&nbsp&nbsp&nbsp;<br>抢号时间:UTC" + reTimezone() + "&nbsp;&nbsp;" + Timezone(hour) + ":" + seczero(minute) + "<br>放号名额为:" + comma(people, ",") + "名</h3>";
+			txt += "<br>下次抢号时间为:<h3>" + month + "月" + date + "日&nbsp;&nbsp;&nbsp;&nbsp;(" + Convert(weekday) + ")&nbsp&nbsp&nbsp;<br>抢号时间:UTC" + reTimezone() + "&nbsp;&nbsp;" + Timezone(hour) + ":" + seczero(minute) + "<br>放号名额为:" + comma(people, ",") + "名</h3>";
 		}
 	}
 	else if(timepast(month, date, hour, minute) == 0)
 	{
-		txt = "<br>开始抢号，请提督做好准备。抢号地址:<h1><a href=\"http:\/\/www.dmm.com\/netgame\/social\/-\/gadgets\/=\/app_id=854854\/\" target=\"blank\">艦隊これくしょん　艦これ</a>";
+		txt += "<br>开始抢号，请提督做好准备。抢号地址:<h1><a href=\"http:\/\/www.dmm.com\/netgame\/social\/-\/gadgets\/=\/app_id=854854\/\" target=\"blank\">艦隊これくしょん　艦これ</a>";
 	}
 	else if(timepast(month, date, hour, minute) == 1)
 	{
-		txt = "<br>本次抢号活动已经结束，若抢号未成功，请等待下一次的官方抢号时间.<br>";
-		txt += "<span class=\"black\">上一次</span>的抢号时间为:<h3>" + month + "月" + date + "日&nbsp;&nbsp;&nbsp;&nbsp;(" + Convert(weekday) + ")&nbsp&nbsp&nbsp;<br>抢号时间:UTC" + reTimezone() + "&nbsp;&nbsp;" + Timezone(hour) + ":" + seczero(minute) + "<br>放号名额为:" + comma(people, ",") + "名<br><br>下一次抢号时间为<br>" + nextmonth + "月" + nextdate + "日&nbsp;&nbsp;(" + Convert(nextweekday) + ")</h3>";
+		txt += "<br>本次抢号活动已经结束，若抢号未成功，请等待下一次的官方抢号时间.<br>";
+		txt += "<span class=\"black\">上一次</span>的抢号时间为:<h3>" + month + "月" + date + "日&nbsp;&nbsp;&nbsp;&nbsp;(" + Convert(weekday) + ")&nbsp&nbsp&nbsp;<br>抢号时间:UTC" + reTimezone() + "&nbsp;&nbsp;" + Timezone(hour) + ":" + seczero(minute) + "<br>放号名额为:" + comma(people, ",") + "名<br><br>下一次抢号时间为<br>";
+		 if(readycode==0&&nextmonth=="null")
+		 {
+			 txt+="Loading</h3>";
+		 }
+		  else if(readycode==1||nextmonth!="null")
+		 {
+			 txt +=nextmonth + "月" + nextdate + "日&nbsp;&nbsp;(" + Convert(nextweekday) + ")</h3>";
+		 }
 		console.warn("Time up");
 	}
-	txt += "<h4>"+_time()+"</h4>";
 	if(event_year != "" && event_year != null && event_name != "")
 	{
 		txt += "<h4>当前活动:" + event_year + "年【" + comma(event_name, "[【】]") + "】</h4>";
@@ -41,10 +51,12 @@ function maincore()
 	txt += _event();
 	var dom_time = document.getElementById("time");
 	dom_time.innerHTML = txt;
-	if(!mobile())
-	{
-	setTimeout("maincore()", 1000);//递归
-	}
+}
+function nowtime()
+{
+	var nowtimecontent=document.getElementById("nowtime");
+	nowtimecontent.innerHTML="<h4>"+_time()+"</h4>";
+	setTimeout("nowtime()",1000);
 }
 //上部分需要进行函数化，代码过于冗长
 console.timeEnd("running kancollev3.js use time");
@@ -71,6 +83,10 @@ function _event()
 	{
 		_eventtxt += "<h4>活动结束时间:" + event_end_month + "月" + event_end_date + "日 (" + Convert(event_end_weekday) + ")</h4>";	
 	}
+	if(nowtimesec()-timecompare(event_end_month,event_end_date,0,0))
+	{
+		_eventtxt+="<h4>活动已结束</h4>";		
+	}
 	return _eventtxt;
 }
 function _time()
@@ -82,7 +98,7 @@ function _time()
 	var _hour=time.getHours();
 	var _minute=time.getMinutes();
 	var _second=time.getSeconds();
-	return "现在的时间:"+	_year+"年"+_month+"月"+_date+"日"+_hour+"时"+seczero(_minute)+"分"+seczero(_second)+"秒";
+	return "现在的时间:<br><br>"+	_year+"年"+_month+"月"+_date+"日<br><br>"+_hour+"时"+seczero(_minute)+"分"+seczero(_second)+"秒";
 }
 //时区
 function remindTimezoneChange()
@@ -185,7 +201,7 @@ function _screenwidth(id)
 {
 	var thiswidth = screen.availWidth;
 	var x = document.getElementById(id);
-	x.style.width = thiswidth * 0.8;
+	x.style.width = thiswidth * 0.95;
 }
 //倒计时模块
 var t;
@@ -226,7 +242,14 @@ function timecount(month, date, hour, minute)
 			else
 			{
 				maincore();
-				htmlo.innerHTML = "<h4>距离抢号时间还有" + seczero(ld) + "日" + seczero(lh) + "小时" + seczero(lmi) + "分" + seczero(ls) + "秒</h4>";
+				if(ld==0)
+				{
+				htmlo.innerHTML = "<h4>距离抢号时间还有<br>" + seczero(lh) + "小时" + seczero(lmi) + "分" + seczero(ls) + "秒</h4>";
+				}
+				else
+				{
+				htmlo.innerHTML = "<h4>距离抢号时间还有<br>" + seczero(ld) + "日" + seczero(lh) + "小时" + seczero(lmi) + "分" + seczero(ls) + "秒</h4>";
+				}
 			}
 			t = setTimeout("timecount(month,date,hour,minute)", 1000);
 		}
@@ -269,4 +292,53 @@ else
 {
 	return false;	
 }
+}
+function timecompare(month,date,hour,minutes)
+{
+var minuteplus=new Number();
+minuteplus= getMonthSec(month)+date*24*60+hour*60+minutes;
+return minuteplus;
+}
+function nowtimesec()
+{
+var now=new Date();
+var m=now.getMonth()+1;
+var d=now.getDate();
+var h=now.getHours();
+var mi=now.getMinutes();
+var nowplus=getMonthSec(m)+d*24*60+h*60+mi;
+return nowplus;	
+}
+function XMLRefresh()
+{
+	$().ready(function(e) {
+	var xmlhttp;
+	var urladdr=new String();
+	if(timepast(month, date, hour, minute) == 1)
+	{
+	urladdr="http://"+location.hostname+"/php/trace2.php?ajax=1&r=refresh&client=web&random="+nowtimesec();
+	}
+	else
+	{
+	urladdr="http://"+location.hostname+"/php/trace2.php?ajax=1&client=web&random="+nowtimesec();		
+	}
+		if(window.XMLHttpRequest)
+		{
+	    	xmlhttp=new XMLHttpRequest();
+		}
+		else
+		{
+			xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+		}
+		xmlhttp.onreadystatechange=function(){
+			if(xmlhttp.readyState==4&&xmlhttp.status==200)
+			{
+				eval(xmlhttp.responseText);
+				maincore(1);
+				console.log(eval(xmlhttp.responseText));
+			}
+		}
+		xmlhttp.open("GET",urladdr,true);
+		xmlhttp.send();
+		    });
 }

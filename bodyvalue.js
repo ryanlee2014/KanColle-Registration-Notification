@@ -1,5 +1,6 @@
 console.time("running bodyvalue use time");
 var text;
+//HTML body elements
 if(returnUserAgent("useragent") == "IE")
 {
 	if(returnUserAgent("version") <= 7)
@@ -28,11 +29,12 @@ else
 	{
 		text += "<div data-role=\"content\" style=\"margin-top:5em;\"><a href=\"kancollev2.html\" target=\"blank\"><button>此页面已经停止维护,点击此前往新版</button></a></div>";
 	}
-	text += "\n<div data-role=\"content\" style=\"position:relative;margin-top:5em;\" id=\"time\" data-theme=\"c\"></div>";
-	text += "\n<div data-role=\"content\" id=\"countdown\" data-theme=\"c\" ></div>";
+	text += "\n<div data-role=\"content\" style=\"position:relative;margin-top:5em;width:80%;\" id=\"time\" data-theme=\"c\"></div>";
+	text += "\n<div data-role=\"content\" id=\"countdown\" data-theme=\"c\" style=\"float:right;top:-18em;\"></div>";
+	text += "\n<div data-role=\"content\" id=\"nowtime\" data-theme=\"c\"></div>";
 	text += "<div data-role=\"dialog\" id=\"alert-dialog\" style=\"margin-top:2em;\"><div data-role=\"header\" data-theme=\"a\"><h1>来自网页的信息</h1></div><div role=\"main\" class=\"ui-content\" style=\"background-color:#ffffff;\"><h1>Delete cookie complete!</h1><p align=\"center\" style=\"opacity:1;\">该网页的Cookie已经从您的电脑中删除。</p><a href=\"#home\" data-role=\"button\" data-theme=\"b\" id=\"test\">关闭</a></div></div>";
 	text += btncookie();
-	text += "<br><br><br>";
+	text += "<br><br><br><br><br>";
 	text += "\n<div data-role=\"footer\" style=\"position:fixed;bottom:0px;right:0px;width:100%;\" id=\"footer\"><h1></h1></div></div>";
 	text += "\n<div data-role=\"page\" data-theme=\"a\" id=\"twitter\">";
 	text += "\n<div data-role=\"header\" style=\"position:fixed;top:0px;right:0px;width:100%;z-index:999\">";
@@ -46,13 +48,30 @@ else
 }
 document.write(text);
 footer = document.getElementById("footer");
-var copyright = "<p align=\"center\">抢号时间脚本由<span class=\"bold\">本站</span>提供,判断逻辑由<span class=\"author\">Ryan</span>编写,源代码 ===><span class=\"bold\"><a href=\"https://github.com/ryanlee2014/KanColle-Registration-Notification/\" target=\"_blank\">Kantai-Collection-Notification</a></span></p>";
+var copyright = "<p align=\"center\">抢号时间脚本由<span class=\"bold\">本站</span>提供,判断逻辑由<span class=\"author\">Ryan</span>编写</p>";
 footer.innerHTML = copyright;
 console.log("footer is completed");
 var footer_1 = document.getElementById("footer_1");
 footer_1.innerHTML = "<p align=\"center\">官方推特转发由<span class=\"bold\">本站</span>提供,判断逻辑由<span class=\"author\">Ryan</span>编写</p>";
 forIE();
+if(returnUserAgent("useragent") != "Mobile")
+{
+	var x=document.getElementById("countdown").style;
+	var z=document.getElementById("nowtime").style;
+	z.cssFloat="right";
+	z.marginTop="-20em";
+	x.cssFloat="right";
+	x.right="-36em";	
+	x.marginTop="-9em";
+}
+else if(returnUserAgent("useragent") == "Mobile")
+{
+	var y=document.getElementById("countdown").style;
+	y.cssFloat="left";
+	y.marginTop="0em";	
+}
 console.timeEnd("running bodyvalue use time");
+//函数部分
 function forIE()
 {
 	if(returnUserAgent("useragent") == "Trident")
@@ -95,6 +114,10 @@ function checkCookie()
 		{
 			return "<audio src=\"http://www.haoyuan.info/music/wacci.mp3\" autoplay=\"autoplay\" controls></audio>";
 		}	
+		else if(mobileplayer=="false")
+		{
+		//continue;
+		}
 		else
 		{
 			var Okplayer=confirm("是否开启HTML5播放器?\n该功能10天内有效");
@@ -199,7 +222,7 @@ function btncookie()
 	var co=getCookie("mobileplayer")+getCookie("flashplayer");
 	if(co!=""&&co!=null)
 	{
-	return "<a href=\"#alert-dialog\" data-role=\"button\" style=\"position:fixed;width:100px;float:right;right:1em;top:7em; z-index:999\" id=\"cookie_a\" data-rel=\"dialog\" data-transition=\"pop\">删除Cookie</a>";
+	return "<a href=\"#alert-dialog\" data-role=\"button\" style=\"position:fixed;width:100px;float:right;right:1em;top:80%; z-index:999\" id=\"cookie_a\" data-rel=\"dialog\" data-transition=\"pop\">删除Cookie</a>";
 	}
 }
 /*

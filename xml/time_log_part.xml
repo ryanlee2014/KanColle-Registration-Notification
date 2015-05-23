@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<times>
+<time>
+<month>5</month>
+<date>13</date>
+<weekday/>
+<people>5,000</people>
+</time>
+<time>
+<month>5</month>
+<date>15</date>
+<weekday>金曜日</weekday>
+<people>5,000</people>
+</time>
+<time>
+<month>5</month>
+<date>17</date>
+<weekday>日曜日</weekday>
+<people>5,000</people>
+</time>
+<time>
+<month>5</month>
+<date>19</date>
+<weekday>火曜日</weekday>
+<people>5,000</people>
+</time>
+<time><month>5</month><date>21</date><weekday>木曜日</weekday><people>5,000</people></time><time><month>5</month><date>23</date><weekday>土曜日</weekday><people>5,000</people></time></times>

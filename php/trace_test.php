@@ -2,8 +2,6 @@
 $nowtime=getdate();
 $nowmonth=$nowtime[mon];
 $nowdate=$nowtime[mday];
-$nowhours=$nowtime[hours];
-$nowminutes=$nowtime[minutes];
 if($_GET['day']=="1"&&$_GET['test']=="1")
 {
 echo $nowmonth."\n".$nowdate;	
@@ -28,8 +26,6 @@ if($_GET['xml']=="6"&&$_GET['test']=="1")
 }
 ?>
 <?php
-if(/*($nowmonth<=$load_time_month&&$nowdate<=$load_time_date&&$nowhours<=$load_time_hour)*/true)
-{
 $url = "http://".$_SERVER['HTTP_HOST']."/twitter/index.php"; //获取内容
 global $contents; 
 $contents = file_get_contents($url); 
@@ -37,6 +33,7 @@ $contents = file_get_contents($url);
 //$getcontent = iconv("gb2312", "utf-8",$contents);
 //echo $contents;
 //功能实现正则
+$event_end_full=preg_match("/【([\s\S](?!】))*AM[\S\s]*?】/",$contents,$event_end_full_char);
 $notimepart="/：【\d+\/\d+\(\S+\)(\S*)\】/";//没有小时的正则表达式
 $nexttime="/\d+\/\d+\([\x80-\xff]*(曜)*日\)\s*\d+:\d+(\s*)(?=】)/";//catch all
 $li="/\d+\S\d+(?=名】)/";
@@ -71,10 +68,6 @@ $evn=preg_match("/(春|夏|秋|冬)イベント\S+(?:】)(?=は|の|を|、)/",$
 $evnm=preg_match("/\d{1,2}/",$event_end[0],$event_end_month);
 $evnd=preg_match("/\d{1,2}(?=\()/",$event_end[0],$event_end_date);
 $evew=preg_match("/[\x80-\xff]{1,3}?(曜)*日/",$event_end[0],$event_end_weekday);
-$evendf=preg_match("/【([\s\S](?!】))*AM[\S\s]*?】/",$contents,$event_full_end);
-$eventfm=preg_match("/\d{1,2}/",$event_full_end[0],$event_full_month);
-$eventfd=preg_match("/\d{1,2}(?=\()/",$event_full_end[0],$event_full_date);
-$eventfw=preg_match("/[\x80-\xff]{1,3}?(曜)*日/",$event_full_end[0],$event_full_weekday);
 if((int)$_month[0]>(int)$month[0])
 {
 $m=$_month[0];	
@@ -110,7 +103,7 @@ else if((int)$month[0]==(int)$_month[0])
 		$w=$weekday[0];
 	}
 }
-}
+/*
 else
 {
 	$m=$load_time_month;
@@ -119,7 +112,7 @@ else
 	$people=$load_time_people;
 	$h=$load_time_hour;
 	$mi=$load_time_minute;	
-}
+}*/
 ?>
 <?php
 $load_event_xml=new DOMDocument();
@@ -408,7 +401,8 @@ else if($client==""&&$help==""&&$val!="")
 	}
 	if($val=="fullend")
 	{
-		echo "event_full_end=".$event_full_end[0];	
+		echo "event_full_end=";
+		echo $event_end_full_char[0];	
 	}
 }
 else
@@ -539,49 +533,13 @@ else
 			$load_appendChild_minute_textnode=$load_appendChild_minute->appendChild($load_appendChild_minute_textnode);		
 			$xml_load_time->save('../xml/time_log.xml');			
 		}
+
 if($_GET['xml']=="5"&&$_GET['test']=="1")
 {
 	header('Content-Type:application/xml;charset=utf-8');
 	echo $xml_load_time->saveXML();	
 }
 }
-?>
-<?php
-/*
-if(!(is_file("../xml/time_log_part.xml")))
-{
-	if($_month[0]!="null"&&$_date[0]!="null")
-	{
-	$xml_file_timestamp=new DOMDocument();
-	$xml_file_timestamp_root=$xml_file_timestamp->createElement('times');
-	$xml_file_timestamp_root=$xml_file_timestamp->appendChild($xml_file_timestamp_root);
-	$xml_file_timestamp_time=$xml_file_timestamp->createElement('time');
-	$xml_file_timestamp_time=$xml_file_timestamp_root->appendChild($xml_file_timestamp_time);
-	$xml_file_timestamp_month=$xml_file_timestamp->createElement('month');
-	$xml_file_timestap_month=$xml_file_timestamp_time->appendChild($xml_file_timestamp_month);
-	$xml_file_timestamp_date=$xml_file_timestamp->createElement('date');
-	$xml_file_timestamp_date=$xml_file_timestamp_time->appendChild($xml_file_timestamp_date);
-	$xml_file_timestamp_weekday=$xml_file_timestamp->createElement('weekday');
-	$xml_file_timestamp_weekday=$xml_file_timestamp_time->appendChild($xml_file_timestamp);
-	$xml_file_timestamp_month_textnode=$xml_file_timestamp->createTextNode($_month[0]);
-	$xml_file_timestamp_month_textnode=$xml_file_timestamp_month->appendChild($xml_file_timestamp_month_textnode);
-	$xml_file_timestamp_date_textnode=$xml_file_timestamp->createTextNode($_date[0]);
-	$xml_file_timestamp_date_textnode=$xml_file_timestamp_date->appendChild($xml_file_timestamp_date_textnode);
-	$xml_file_timestamp_weekday_textnode=$xml_file_timestamp->createTextNode($_weekday[0]);
-	$xml_file_timestamp_weekday_textnode=$xml_file_timestamp_weekday->appendChild($xml_file_timestamp_weekday_textnode);
-	$xml_file_timestamp->save("../xml/time_log_part.xml");
-	}
-}
-else
-{
-	$xml_load_timestamp=new DOMDocument();
-	$xml_load_timestamp_root=$xml_file_timestamp->getElementsByTagName('time');
-	$xml_load_timestamp_root_length=$xml_load_timestamp_root->length-1;
-	$xml_load_timestamp_root_lastChild=$xml_load_timestamp_root->item($xml_load_timestamp_root_length);
-	$xml_load_timestamp_month=$xml_load_timestamp_root_lastChild->getElementsByTagName('month')->item(0)->nodeValue;
-	$xml_load_timestamp_date=$xml_load_timestamp_root_lastChild->getElementsByTagName('date')->item(0)->nodeValue;
-	$xml_load_timestamp_weekday=$xml_load_timestamp_root_lastChild->getElementsByTagName('weekday')->item(0)->nodeValue;	
-}*/
 ?>
 <?php
 /*
