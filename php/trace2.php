@@ -66,11 +66,19 @@ if($nowmonth>$valmonth||($nowmonth==$valmonth&&$nowdate>$valdate))
 	$func=true;
 }
 $get=$_GET['get'];
+$getCount=$_GET['t'];
+if($getCount==""||$getCount==null)
+{
+$getCount=100;	
+}
 if($get=="1"||$func||$ajax=="1")
 {
-	$url = "http://".$_SERVER['HTTP_HOST']."/twitter/index.php"; //获取内容
+	$url = "http://".$_SERVER['HTTP_HOST']."/twitter/index.php?t=".$getCount; //获取内容
 	global $contents; 
 	$contents = file_get_contents($url); 
+	$url_2 = "http://".$_SERVER['HTTP_HOST']."/twitter/index.php?e=next";
+	global $next_contents; 
+	$next_contents = file_get_contents($url_2);
 	//如果出现中文乱码使用下面代码 
 	//$getcontent = iconv("gb2312", "utf-8",$contents);
 	//echo $contents;
@@ -79,10 +87,10 @@ if($get=="1"||$func||$ajax=="1")
 	$nexttime="/\d+\/\d+\([\x80-\xff]*(曜)*日\)\s*\d+:\d+(\s*)(?=】)/";//catch all
 	$li="/\d+\S\d+(?=名】)/";
 	$comma="/\d+(?=,)\d+/";
-	$ne=preg_match("/(?:日)*(?:【)\d+\S+(?:】)\S*(?=に|以)/",$contents,$next);
-	$nemo=preg_match("/\d+/",$next[0],$nextmonth);
-	$neda=preg_match("/\d{1,2}(?=\()/",$next[0],$nextdate);
-	$newe=preg_match("/[\x80-\xff]{1,9}(曜)*日/",$next[0],$nextweekday);
+	#$ne=preg_match("/(?:日)*(?:【)\d+\S+(?:】)\S*(?=に|以)/",$contents,$next);
+	$nemo=preg_match("/\d+/",$next_contents,$nextmonth);
+	$neda=preg_match("/\d{1,2}(?=\()/",$next_contents,$nextdate);
+	$newe=preg_match("/[\x80-\xff]{1,9}(曜)*日/",$next_contents,$nextweekday);
 	$evti=preg_match("/<p>(?:\S+)?(?=イベント)\S+(?:【)(\d+)\S\d+\S+(?:】)(?=\S+)/",$contents,$event_time);
 	$evti_=preg_match("/\d{1,2}(?=\/)/",$event_time[0],$event_month);
 	$evti_1=preg_match("/\d{1,2}(?=\()/",$event_time[0],$event_date);
@@ -99,6 +107,12 @@ if($get=="1"||$func||$ajax=="1")
 	$week=preg_match("/(?![\(\)])[\x80-\xff]{1,9}(曜)*日/",$nval[0],$weekday);
 	$ho=preg_match("/\d+(?=:)/",$nval[0],$hour);
 	$min=preg_match("/\d+$/",$nval[0],$minute);
+	#$main=preg_match("/メンテナンス[\s\S]+【[\s\S]*\([\s\S]+】/",$contents,$maintenstring);
+	#$mainm=preg_match("/\d{1,2}?/",$maintenstring[0],$main_m);
+	#$maind=preg_match("/\d{1,2}(?=\()/",$maintenstring[0],$main_d);
+	#$mainw=preg_match("/[\x80-\xff]{1,9}(曜)*日/",$maintenstring[0],$main_w);
+	#$mains=preg_match("/開始時間は【\d+?\:\d+?】/",$mainenstring[0],$main_start);
+	#$maine=preg_match("完了は同日【\d+?\:\d+】",$maintenstring[0],$main_end);
 	$people=$pe[0];
 	//活动设定
 	$eve=preg_match("/(春|夏|秋|冬)イベント\S+(?:】)/",$contents,$event);
@@ -113,6 +127,9 @@ if($get=="1"||$func||$ajax=="1")
 	$eventfm=preg_match("/\d{1,2}/",$event_full_end[0],$event_full_month);
 	$eventfd=preg_match("/\d{1,2}(?=\()/",$event_full_end[0],$event_full_date);
 	$eventfw=preg_match("/[\x80-\xff]{1,3}?(曜)*日/",$event_full_end[0],$event_full_weekday);
+	$valnextdate=$nextdate[0];
+	$valnextmonth=$nextmonth[0];
+	$valnextweekday=$nextweekday[0];
 		if((int)$_month[0]>(int)$month[0])
 		{
 			$m=$_month[0];	
@@ -160,14 +177,16 @@ else
 }
 	$load_event_xml=new DOMDocument();
 	$load_event_xml->load("../xml/event_file.xml");
-	$load_event_year=$load_event_xml->getElementsByTagName('event_year');
-	$load_event_month=$load_event_xml->getElementsByTagName('event_month');
-	$load_event_date=$load_event_xml->getElementsByTagName('event_date');
-	$load_event_name=$load_event_xml->getElementsByTagName('event_name');
-	$load_event_weekday=$load_event_xml->getElementsByTagName('event_weekday');
-	$load_event_end_month=$load_event_xml->getElementsByTagName('event_end_month');
-	$load_event_end_date=$load_event_xml->getElementsByTagName('event_end_date');
-	$load_event_end_weekday=$load_event_xml->getElementsByTagName('event_end_weekday');
+	$load_event_xml_length=$load_event_xml->getElementsByTagName('event')->length-1;
+	$load_event_xml_lastChild=$load_event_xml->getElementsByTagName('event')->item($load_event_xml_length);
+	$load_event_year=$load_event_xml_lastChild->getElementsByTagName('event_year');
+	$load_event_month=$load_event_xml_lastChild->getElementsByTagName('event_month');
+	$load_event_date=$load_event_xml_lastChild->getElementsByTagName('event_date');
+	$load_event_name=$load_event_xml_lastChild->getElementsByTagName('event_name');
+	$load_event_weekday=$load_event_xml_lastChild->getElementsByTagName('event_weekday');
+	$load_event_end_month=$load_event_xml_lastChild->getElementsByTagName('event_end_month');
+	$load_event_end_date=$load_event_xml_lastChild->getElementsByTagName('event_end_date');
+	$load_event_end_weekday=$load_event_xml_lastChild->getElementsByTagName('event_end_weekday');
 	$load_event_year_textnode=$load_event_year->item(0)->nodeValue;
 	$load_event_month_textnode=$load_event_month->item(0)->nodeValue;
 	$load_event_date_textnode=$load_event_date->item(0)->nodeValue;
@@ -228,10 +247,15 @@ else
 		$event_end_date[0]=$load_event_end_date_textnode;
 		$event_end_weekday[0]=$load_event_end_weekday_textnode;	
 	}
+	if($nowdate<$xml_load_nextdate)
+	{
 	$nextdate[0]=$xml_load_nextdate_date;
 	$nextmonth[0]=$xml_load_nextdate_month;
 	$nextweekday[0]=$xml_load_nextdate_weekday;
+	}
 //活动文件写入
+if(!is_file("../xml/event_file.xml"))
+{
 $event_xml=new DOMDocument();
 $event_xml->formatOutput=true;
 $root=$event_xml->createElement('event');
@@ -275,12 +299,52 @@ $file=fopen("../xml/event_file.xml","w");
 fwrite($file,$xmlfile);
 fclose($file);
 }
-$xml_get=$_GET['xml'];
-if($xml_get=="1")
-{
-	header('Content-Type:application/xml;charset=utf-8');
-	echo $xmlfile;
 }
+else
+{
+if($event_name[0]!=""&&$event_month!=$event_end_month[0]&&$event_end_month[0]!="null")
+{
+$xml_event_file=new DOMDocument();
+$xml_event_file->load("../xml/event_file.xml");
+$xml_event_file_root=$xml_event_file->getElementsByTagName('events')->item(0);
+$xml_event_file_appendChild=$xml_event_file->createElement('event');
+$xml_event_file_appendChild=$xml_event_file_root->appendChild($xml_event_file_appendChild);
+$xml_event_file_appendChild_year=$xml_event_file->createElement('event_year');
+$xml_event_file_appendChild_year=$xml_event_file_appendChild->appendChild($xml_event_file_appendChild_year);
+$xml_event_file_appendChild_year_textnode=$xml_event_file->createTextNode($event_yr);
+$xml_event_file_appendChild_year_textnode=$xml_event_file_appendChild_year->appendChild($xml_event_file_appendChild_year_textnode);
+$xml_event_file_appendChild_month=$xml_event_file->createElement('event_month');
+$xml_event_file_appendChild_month=$xml_event_file_appendChild->appendChild($xml_event_file_appendChild_month);
+$xml_event_file_appendChild_month_textnode=$xml_event_file->createTextNode($event_m);
+$xml_event_file_appendChild_month_textnode=$xml_event_file_appendChild_month->appendChild($xml_event_file_appendChild_month_textnode);
+$xml_event_file_appendChild_date=$xml_event_file->createElement('event_date');
+$xml_event_file_appendChild_date=$xml_event_file_appendChild->appendChild($xml_event_file_appendChild_date);
+$xml_event_file_appendChild_date_textnode=$xml_event_file->createTextNode($event_d);
+$xml_event_file_appendChild_date_textnode=$xml_event_file_appendChild_date->appendChild($xml_event_file_appendChild_date_textnode);
+$xml_event_file_appendChild_name=$xml_event_file->createElement('event_name');
+$xml_event_file_appendChild_name=$xml_event_file_appendChild->appendChild($xml_event_file_appendChild_name);
+$xml_event_file_appendChild_name_textnode=$xml_event_file->createTextNode($event_name[0]);
+$xml_event_file_appendChild_name_textnode=$xml_event_file_appendChild_name->appendChild($xml_event_file_appendChild_name_textnode);
+$xml_event_file_appendChild_weekday=$xml_event_file->createElement('event_weekday');
+$xml_event_file_appendChild_weekday=$xml_event_file_appendChild->appendChild($xml_event_file_appendChild_weekday);
+$xml_event_file_appendChild_weekday_textnode=$xml_event_file->createTextNode($event_w);
+$xml_event_file_appendChild_weekday_textnode=$xml_event_file_appendChild_weekday->appendChild($xml_event_file_appendChild_weekday_textnode);
+$xml_event_file_appendChild_end_month=$xml_event_file->createElement('event_end_month');
+$xml_event_file_appendChild_end_month=$xml_event_file_appendChild->appendChild($xml_event_file_appendChild_end_month);
+$xml_event_file_appendChild_end_month_textnode=$xml_event_file->createTextNode($event_end_month[0]);
+$xml_event_file_appendChild_end_month_textnode=$xml_event_file_appendChild_end_month->appendChild($xml_event_file_appendChild_end_month_textnode);
+$xml_event_file_appendChild_end_date=$xml_event_file->createElement('event_end_date');
+$xml_event_file_appendChild_end_date=$xml_event_file_appendChild->appendChild($xml_event_file_appendChild_end_date);
+$xml_event_file_appendChild_end_date_textnode=$xml_event_file->createTextNode($event_end_date[0]);
+$xml_event_file_appendChild_end_date_textnode=$xml_event_file_appendChild_end_date->appendChild($xml_event_file_appendChild_end_date_textnode);
+$xml_event_file_appendChild_end_weekday=$xml_event_file->createElement('event_end_weekday');
+$xml_event_file_appendChild_end_weekday=$xml_event_file_appendChild->appendChild($xml_event_file_appendChild_end_weekday);
+$xml_event_file_appendChild_end_weekday_textnode=$xml_event_file->createTextNode($event_end_weekday[0]);
+$xml_event_file_appendChild_end_weekday_textnode=$xml_event_file_appendChild_end_weekday->appendChild($xml_event_file_appendChild_end_weekday_textnode);
+$xml_event_file->save("../xml/event_file.xml");
+}
+}
+$xml_get=$_GET['xml'];
 if($xml_get=="2")
 {
 	header('Content-Type:application/xml;charset=utf-8');
@@ -354,7 +418,7 @@ if($client=="web")
 	//JavaScript输出
 header('Access-Control-Allow-Origin:*');
 header('Content-type: application/x-javascript;charset=utf-8');
-if($ajax!="1")
+/*if($ajax!="1")
 {
 echo "var month=new Number();\n";
 echo "var date=new Number();\n";
@@ -373,7 +437,7 @@ echo "var nextweekday=new String();\n";
 echo "var event_end_month=new Number();\n";
 echo "var event_end_date=new Number();\n";
 echo "var event_end_weekday=new String();\n";
-}
+}*/
 echo "month=".$m.";\n";
 echo "date=".$dat.";\n";
 echo "weekday=\"".$w."\";\n";
@@ -385,9 +449,9 @@ echo "event_name=\"".$event_name[0]."\";\n";
 echo "event_month=".$event_m.";\n";
 echo "event_date=".$event_d.";\n";
 echo "event_weekday=\"".$event_w."\";\n";
-echo "nextmonth=".$nextmonth[0].";\n";
-echo "nextdate=".$nextdate[0].";\n";
-echo "nextweekday=\"".$nextweekday[0]."\";\n";
+echo "nextmonth=".$valnextmonth.";\n";
+echo "nextdate=".$valnextdate.";\n";
+echo "nextweekday=\"".$valnextweekday."\";\n";
 echo "event_end_month=".$event_end_month[0].";\n";
 echo "event_end_date=".$event_end_date[0].";\n";
 echo "event_end_weekday=\"".$event_end_weekday[0]."\";";
@@ -408,9 +472,9 @@ else if($client=="xml")
 	echo "<event_month>".$event_m."</event_month>\n";
 	echo "<event_date>".$event_d."</event_date>\n";
 	echo "<event_weekday>".$event_w."</event_weekday>\n";
-	echo "<nextmonth>".$nextmonth[0]."</nextmonth>\n";
-	echo "<nextdate>".$nextdate[0]."</nextdate>\n";
-	echo "<nextweekday>".$nextweekday[0]."</nextweekday>\n";
+	echo "<nextmonth>".$valnextmonth."</nextmonth>\n";
+	echo "<nextdate>".$valnextdate."</nextdate>\n";
+	echo "<nextweekday>".$valnextweekday."</nextweekday>\n";
 	echo "<event_end_month>".$event_end_month[0]."</event_end_month>\n";
 	echo "<event_end_date>".$event_end_date[0]."</event_end_date>\n";
 	echo "<event_end_weekday>".$event_end_weekday[0]."</event_end_weekday>\n";	
@@ -420,7 +484,7 @@ else if($client=="json")
 {
 	//json输出
 header('Content-type: application/json;charset=utf-8;');
-$arr = array ('month'=>$m,'date'=>$dat,'weekday'=>$w,'hour'=>$h,'minute'=>$mi,'people'=>$people,'event_year'=>$event_yr,'event_name'=>$event_name[0],'event_month'=>$event_m,'event_date'=>$event_d,'event_weekday'=>$event_w,'nextmonth'=>$nextmonth[0],'nextdate'=>$nextdate[0],'nextweekday'=>$nextweekday[0],'event_end_month'=>$event_end_month[0],'event_end_date'=>$event_end_date[0],'event_end_weekday'=>$event_end_weekday[0]);
+$arr = array ('month'=>$m,'date'=>$dat,'weekday'=>$w,'hour'=>$h,'minute'=>$mi,'people'=>$people,'event_year'=>$event_yr,'event_name'=>$event_name[0],'event_month'=>$event_m,'event_date'=>$event_d,'event_weekday'=>$event_w,'nextmonth'=>$nextmonth[0],'nextdate'=>$nextdate[0],'nextweekday'=>$nextweekday[0],'event_end_month'=>$event_end_month[0],'event_end_date'=>$event_end_date[0],'event_end_weekday'=>$event_end_weekday[0],'nextmonth'=>$valnextmonth,'nextdate'=>$valnextdate,'nextweekday'=>$valnextweekday);
 $jsonval=json_encode($arr);
 //$txt="kancolle={month:\"".$month[0]."\",date:\"".$day[0]."\",weekday:\"".$weekday[0]."\",hour:\"".$hour[0]."\",minute:\"".$minute[0]."\"}";
 echo $jsonval;	
@@ -433,9 +497,16 @@ else if($client==""&&$help==""&&$val!="")
 	{
 		echo "nextmonth=".$nextmonth[0];	
 	}	
+	#if($val="maintenance")
+	#{
+	#	header('Content-Type:application/x-javascript;charset=utf-8');
+	#	$twitter=new DOMDocument();
+	#	$twitter->load("../twitter/index.php?t=100");
+	#	echo $twitter->saveXML();
+	#}
 	if($val=="next")
 	{
-		echo "String next=".$next[0];;	
+		echo "String next=".$next_contents;	
 	}
 	if($val=="nval")
 	{
@@ -559,11 +630,10 @@ else
 	$load_hour=$load_root_lastChild->getElementsByTagName('hour')->item(0)->nodeValue;
 	$load_minute=$load_root_lastChild->getElementsByTagName('minute')->item(0)->nodeValue;
 	$load_people=$load_root_lastChild->getElementsByTagName('people')->item(0)->nodeValue;
-}
-					
-	if($mi!="null"&&$h!="null")
+}			
+	if($mi!="null"&&$h!="null"&&$nowdate>$load_date)
 	{
-		if($load_date!=$dat)
+		if($load_date!=$dat&&$m!=""&&$dat!="")
 		{
 			$load_appendChild_root=$xml_load_time->createElement('time');
 			$load_appendChild_root=$load_this_root->appendChild($load_appendChild_root);
@@ -599,9 +669,9 @@ if($_GET['xml']=="5"&&$_GET['test']=="1")
 	echo $xml_load_time->saveXML();	
 }
 }
-if($m!="null"&&$dat!="null")
+if($h=="null"&&$mi=="null")
 {
-	if($xml_load_timestamp_date!=$dat||$_GET['r']=="refresh")
+	if($xml_load_timestamp_date!=$dat&&$_GET['r']=="refresh")
 	{
 		$xml_timestamp_appendChild_root=$xml_load_timestamp->createElement('time');
 		$xml_timestamp_appendChild_root=$xml_load_timestamp_add->appendChild($xml_timestamp_appendChild_root);
@@ -624,19 +694,23 @@ if($m!="null"&&$dat!="null")
 		$xml_load_timestamp->save("../xml/time_log_part.xml");
 		} 
 }
-if($_GET['r']=="refresh"&&!$xml_load_nextdate_date==$nextdate[0])
+if($nextdate[0]!=""&&$nextdate[0]!=null)
+{
+	
+}
+if($_GET['r']=="refresh"&&$xml_load_nextdate_date!=$nextdate[0])
 {
 $xml_load_nextdate_append=$xml_load_nextdate->createElement('time');
-$xml_load_nextdate_append=$xml_load_nextdate_add->appendChild($xml_load_nextdate_append);
 $xml_load_nextdate_append_month=$xml_load_nextdate->createElement('nextmonth');
+$xml_load_nextdate_append_date=$xml_load_nextdate->createElement('nextdate');
+$xml_load_nextdate_append_weekday=$xml_load_nextdate->createElement('nextweekday');
+$xml_load_nextdate_append=$xml_load_nextdate_add->appendChild($xml_load_nextdate_append);
 $xml_load_nextdate_append_month=$xml_load_nextdate_append->appendChild($xml_load_nextdate_append_month);
 $xml_load_nextdate_append_month_textnode=$xml_load_nextdate->createTextNode($nextmonth[0]);
-$xml_load_nextdate_append_month_textnode=$xml_load_nextdate_month->appendChild($xml_load_nextdate_append_month_textnode);
-$xml_load_nextdate_append_date=$xml_load_nextdate->createElement('nextdate');
+$xml_load_nextdate_append_month_textnode=$xml_load_nextdate_append_month->appendChild($xml_load_nextdate_append_month_textnode);
 $xml_load_nextdate_append_date=$xml_load_nextdate_append->appendChild($xml_load_nextdate_append_date);
-$xml_load_nextdate_append_date_textnode=$xml_nextdate->createTextNode($nextdate[0]);
+$xml_load_nextdate_append_date_textnode=$xml_load_nextdate->createTextNode($nextdate[0]);
 $xml_load_nextdate_append_date_textnode=$xml_load_nextdate_append_date->appendChild($xml_load_nextdate_append_date_textnode);
-$xml_load_nextdate_append_weekday=$xml_load_nextdate->createElement('nextweekday');
 $xml_load_nextdate_append_weekday=$xml_load_nextdate_append->appendChild($xml_load_nextdate_append_weekday);
 $xml_load_nextdate_append_weekday_textnode=$xml_load_nextdate->createTextNode($nextweekday[0]);
 $xml_load_nextdate_append_weekday_textnode=$xml_load_nextdate_append_weekday->appendChild($xml_load_nextdate_append_weekday_textnode);
