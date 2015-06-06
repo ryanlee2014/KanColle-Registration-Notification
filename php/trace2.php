@@ -1,10 +1,13 @@
 <?php
+include_once("../php/function.php");
 $ajax=$_GET['ajax'];
 $nowtime=getdate();
 $nowmonth=$nowtime[mon];
 $nowdate=$nowtime[mday];
 $nowhours=$nowtime[hours];
 $nowminutes=$nowtime[minutes];
+$nowyears=$nowtime[year];
+$nowtimeplus=isNowtime();
 $load_time_xml=new DOMDocument();
 $load_time_xml->load("../xml/time_log.xml");
 $load_time_root=$load_time_xml->getElementsByTagName('time');
@@ -36,12 +39,24 @@ $xml_load_nextdate_root_lastChild=$xml_load_nextdate_root->item($xml_load_nextda
 $xml_load_nextdate_month=$xml_load_nextdate_root_lastChild->getElementsByTagName('nextmonth')->item(0)->nodeValue;
 $xml_load_nextdate_date=$xml_load_nextdate_root_lastChild->getElementsByTagName('nextdate')->item(0)->nodeValue;
 $xml_load_nextdate_weekday=$xml_load_nextdate_root_lastChild->getElementsByTagName('nextweekday')->item(0)->nodeValue;
+$xml_load_maintenance=new DOMDocument();
+$xml_load_maintenance->load("../xml/maintenance.xml");
+$xml_laod_maintenance_add=$xml_load_maintenance->getElementsByTagName('maintenances')->item(0);
+$xml_load_maintenance_root=$xml_load_maintenance->getElementsByTagName('maintenance');
+$xml_load_maintenance_length=$xml_load_maintenance_root->length-1;
+$xml_load_maintenance_root_lastChild=$xml_load_maintenance_root->item($xml_load_maintenance_length);
+$xml_load_maintenance_month=$xml_load_maintenance_root_lastChild->getElementsByTagName('month')->item(0)->nodeValue;
+$xml_load_maintenance_date=$xml_load_maintenance_root_lastChild->getElementsByTagName('date')->item(0)->nodeValue;
+$xml_load_maintenance_weekday=$xml_load_maintenance_root_lastChild->getElementsByTagName('weekday')->item(0)->nodeValue;
 $valhour="null";
 $valminute="null";
 $valmonth="null";
 $valdate="null";
 $valpeople="null";
 $valweekday="null";
+$valmaintenance_m="null";
+$valmaintenance_d="null";
+$valmaintenance_w="null";
 $valnextmonth=$xml_load_nextdate_month;
 $valnextdate=$xml_load_nextdate_date;
 $valnextweekday=$xml_load_nextdate_weekday;
@@ -61,6 +76,13 @@ else
 	$valweekday=$xml_load_timestamp_weekday;
 	$valpeople=$xml_load_timestamp_people;
 }
+$maintp=time_all($nowyears,$xml_load_maintenance_month,$xml_load_maintenance_date,0,0);
+if($maintp>=$nowtimeplus)
+{
+$valmaintenance_m=$xml_load_maintenance_month;
+$valmaintenance_d=$xml_load_maintenance_date;
+$valmaintenance_w=$xml_load_maintenance_weekday;	
+}
 if($nowmonth>$valmonth||($nowmonth==$valmonth&&$nowdate>$valdate))
 {
 	$func=true;
@@ -79,6 +101,9 @@ if($get=="1"||$func||$ajax=="1")
 	$url_2 = "http://".$_SERVER['HTTP_HOST']."/twitter/index.php?e=next";
 	global $next_contents; 
 	$next_contents = file_get_contents($url_2);
+	$url_3 = "http://".$_SERVER['HTTP_HOST']."/twitter/index.php?e=maintenance";
+	global $maintenance;
+	$maintenance = file_get_contents($url_3);
 	//如果出现中文乱码使用下面代码 
 	//$getcontent = iconv("gb2312", "utf-8",$contents);
 	//echo $contents;
@@ -107,12 +132,13 @@ if($get=="1"||$func||$ajax=="1")
 	$week=preg_match("/(?![\(\)])[\x80-\xff]{1,9}(曜)*日/",$nval[0],$weekday);
 	$ho=preg_match("/\d+(?=:)/",$nval[0],$hour);
 	$min=preg_match("/\d+$/",$nval[0],$minute);
-	#$main=preg_match("/メンテナンス[\s\S]+【[\s\S]*\([\s\S]+】/",$contents,$maintenstring);
-	#$mainm=preg_match("/\d{1,2}?/",$maintenstring[0],$main_m);
-	#$maind=preg_match("/\d{1,2}(?=\()/",$maintenstring[0],$main_d);
-	#$mainw=preg_match("/[\x80-\xff]{1,9}(曜)*日/",$maintenstring[0],$main_w);
-	#$mains=preg_match("/開始時間は【\d+?\:\d+?】/",$mainenstring[0],$main_start);
-	#$maine=preg_match("完了は同日【\d+?\:\d+】",$maintenstring[0],$main_end);
+	#维护时间
+	$mainten_month_flag=preg_match("/\d{1,2}/",$maintenance,$mainten_m);
+	$mainten_date_flag=preg_match("/\d{1,2}(?=\()/",$maintenance,$mainten_d);
+	$mainten_weekday_flag=preg_match("/[\x80-\xff]{1,9}(曜)*日/",$maintenance,$mainten_w);
+	$valmaintenance_m=$mainten_m[0];
+	$valmaintenance_d=$mainten_d[0];
+	$valmaintenance_w=$mainten_w[0];
 	$people=$pe[0];
 	//活动设定
 	$eve=preg_match("/(春|夏|秋|冬)イベント\S+(?:】)/",$contents,$event);
@@ -454,7 +480,10 @@ echo "nextdate=".$valnextdate.";\n";
 echo "nextweekday=\"".$valnextweekday."\";\n";
 echo "event_end_month=".$event_end_month[0].";\n";
 echo "event_end_date=".$event_end_date[0].";\n";
-echo "event_end_weekday=\"".$event_end_weekday[0]."\";";
+echo "event_end_weekday=\"".$event_end_weekday[0]."\";\n";
+echo "maintenance_m=".$valmaintenance_m.";\n";
+echo "maintenance_d=".$valmaintenance_d.";\n";
+echo "maintenance_w=\"".$valmaintenance_w."\";";
 }
 else if($client=="xml")
 {
@@ -477,7 +506,10 @@ else if($client=="xml")
 	echo "<nextweekday>".$valnextweekday."</nextweekday>\n";
 	echo "<event_end_month>".$event_end_month[0]."</event_end_month>\n";
 	echo "<event_end_date>".$event_end_date[0]."</event_end_date>\n";
-	echo "<event_end_weekday>".$event_end_weekday[0]."</event_end_weekday>\n";	
+	echo "<event_end_weekday>".$event_end_weekday[0]."</event_end_weekday>\n";
+	echo "<maintenance_m>".$mainten_m[0]."</maintenance_m>";
+	echo "<maintenance_d>=".$mainten_d[0]."</maintenance_d>";
+	echo "<maintenance_w>".$mainten_w[0]."</maintenance_w>";	
 	echo "</document>";
 }
 else if($client=="json")
@@ -540,7 +572,7 @@ else if($client==""&&$help==""&&$val!="")
 else
 {
 	//错误区域
-	if($help!="1"&&$test!="1"&&$get!="1"&&$ajax=="")
+	if($help!="1"&&$test!="1"&&$get!="1"&&$ajax==""&&$_GET['p']=="")
 	{
 	header('Content-Type:text/html; charset=utf-8');
 	echo "<html><head><title>参数错误</title></head><body>";
@@ -630,8 +662,30 @@ else
 	$load_hour=$load_root_lastChild->getElementsByTagName('hour')->item(0)->nodeValue;
 	$load_minute=$load_root_lastChild->getElementsByTagName('minute')->item(0)->nodeValue;
 	$load_people=$load_root_lastChild->getElementsByTagName('people')->item(0)->nodeValue;
-}			
-	if($mi!="null"&&$h!="null"&&$nowdate>$load_date)
+}	
+if(!is_file("../xml/maintenance.xml"))
+{
+	$xml_maintenance = new DOMDocument();
+	$xml_maintenance->formatOutput=true;
+	$xml_maintenance_root = $xml_maintenance->createElement('maintenances');
+	$xml_maintenance_root = $xml_maintenance->appendChild($xml_maintenance_root);
+	$xml_maintenance_root_child = $xml_maintenance->createElement('maintenance');
+	$xml_maintenance_root_child = $xml_maintenance_root->appendChild($xml_maintenance_root_child);	
+	$xml_maintenance_month = $xml_maintenance->createElement('month');
+	$xml_maintenance_date = $xml_maintenance->createElement('date');
+	$xml_maintenance_weekday = $xml_maintenance->createElement('weekday');
+	$xml_maintenance_month_textnode = $xml_maintenance->createTextNode($valmaintenance_m);
+	$xml_maintenance_date_textnode = $xml_maintenance->createTextNode($valmaintenance_d);
+	$xml_maintenance_weekday_textnode = $xml_maintenance->createTextNode($valmaintenance_w);
+	$xml_maintenance_month_textnode = $xml_maintenance_month->appendChild($xml_maintenance_month_textnode);
+	$xml_maintenance_date_textnode = $xml_maintenance_date->appendChild($xml_maintenance_date_textnode);
+	$xml_maintenance_weekday_textnode = $xml_maintenance_weekday->appendChild($xml_maintenance_weekday_textnode);
+	$xml_maintenance_month = $xml_maintenance_root_child->appendChild($xml_maintenance_month);
+	$xml_maintenance_date = $xml_maintenance_root_child->appendChild($xml_maintenance_date);
+	$xml_maintenance_weekday = $xml_maintenance_root_child->appendChild($xml_maintenance_weekday);
+	$xml_maintenance->save("../xml/maintenance.xml");
+}		
+	if($mi!="null"&&$h!="null")
 	{
 		if($load_date!=$dat&&$m!=""&&$dat!="")
 		{
@@ -694,11 +748,26 @@ if($h=="null"&&$mi=="null")
 		$xml_load_timestamp->save("../xml/time_log_part.xml");
 		} 
 }
-if($nextdate[0]!=""&&$nextdate[0]!=null)
+$mainp=time_all($nowyears,$valmaintenance_m,$valmaintenance_d,0,0);
+if($mainp>$maintp)
 {
-	
+	$xml_plus_maintenance=$xml_load_maintenance->createElement('maintenance');
+	$xml_plus_maintenance=$xml_laod_maintenance_add->appendChild($xml_plus_maintenance);
+	$xml_plus_maintenance_month=$xml_load_maintenance->createElement('month');
+	$xml_plus_maintenance_date=$xml_load_maintenance->createElement('date');
+	$xml_plus_maintenance_weekday=$xml_load_maintenance->createElement('weekday');
+	$xml_plus_maintenance_month_textnode=$xml_load_maintenance->createTextNode($valmaintenance_m);
+	$xml_plus_maintenance_date_textnode=$xml_load_maintenance->createTextNode($valmaintenance_d);
+	$xml_plus_maintenance_weekday_textnode=$xml_load_maintenance->createTextNode($valmaintenance_w);
+	$xml_plus_maintenance_date_textnode=$xml_plus_maintenance_date->appendChild($xml_plus_maintenance_date_textnode);
+	$xml_plus_maintenance_month_textnode=$xml_plus_maintenance_month->appendChild($xml_plus_maintenance_month_textnode);
+	$xml_plus_maintenance_weekday_textnode=$xml_plus_maintenance_weekday->appendChild($xml_plus_maintenance_weekday_textnode);
+	$xml_plus_maintenance_month=$xml_plus_maintenance->appendChild($xml_plus_maintenance_month);
+	$xml_plus_maintenance_date=$xml_plus_maintenance->appendChild($xml_plus_maintenance_date);
+	$xml_plus_maintenance_weekday=$xml_plus_maintenance->appendChild($xml_plus_maintenance_weekday);
+	$xml_load_maintenance->save("../xml/maintenance.xml");
 }
-if($_GET['r']=="refresh"&&$xml_load_nextdate_date!=$nextdate[0])
+if($_GET['r']=="refresh"&&$xml_load_nextdate_date!=$nextdate[0]&&$nextdate[0]!=""&&$nextdate[0]!=null)
 {
 $xml_load_nextdate_append=$xml_load_nextdate->createElement('time');
 $xml_load_nextdate_append_month=$xml_load_nextdate->createElement('nextmonth');
@@ -720,6 +789,26 @@ $xml_load_nextdate->save("../xml/nextdate.xml");
 <?php
 ?>
 <?php
+if($_GET['p']=="month")
+{
+	echo $m;	
+}
+if($_GET['p']=="date")
+{
+	echo $dat;	
+}
+if($_GET['p']=="hour")
+{
+	echo $h;	
+}
+if($_GET['p']=="minute")
+{
+	echo $mi;	
+}
+if($_GET['p']=="weekday")
+{
+	echo Convert($w);	
+}
 /*
 $dom=new DOMDocument('1.0','UTF-8');
 $filename="/xml/timetable.xml";

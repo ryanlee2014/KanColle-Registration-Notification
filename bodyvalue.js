@@ -24,12 +24,10 @@ var nextweekday=new String();
 var event_end_month=new Number();
 var event_end_date=new Number();
 var event_end_weekday=new String();
+var maintenance_m=new Number();
+var maintenance_d=new Number();
+var maintenance_w=new Number();
 count=0;
-var isIE = function(ver){
-    var b = document.createElement('b')
-    b.innerHTML = '<!--[if IE ' + ver + ']><i></i><![endif]-->'
-    return b.getElementsByTagName('i').length === 1
-}
 //HTML body elements
 	if(isIE(5)||isIE(6)||isIE(7))
 	{
@@ -40,12 +38,12 @@ else
 {
 	text = checkCookie();
 	text += "<div data-role=\"page\" data-theme=\"a\" id=\"home\"><div data-role=\"header\"  style=\"position:fixed;top:0px;right:0px;width:100%;z-index:500\"><h4>";
-	text += "Kantai Collection Notification(Ver1.5)";
+	text += "Kantai Collection Notification(Ver1.5.2)";
 	text += "<span id=\"cookie\" align=\"right\" class=\"header\" onClick=\"delCookie()\">";
 	text += "</span></h4>";
 	text +="</div><div data-role=\"navbar\" style=\"margin-top:2.7em;\">";
 	text +="<ul><li>";
-	text +="<a href=\"#home\"  data-icon=\"home\">首页</a></li><li><a href=\"#twitter\" data-transition=\"slide\" data-icon=\"arrow-r\">官推截图</a></li></ul></div>";
+	text +="<a href=\"#home\"  data-icon=\"home\">首页</a></li><li><a href=\"#twitter\" data-transition=\"slide\" data-icon=\"arrow-r\">官推截图</a></li><li><a href=\"#about\" data-icon=\"info\" data-transition=\"slide\">关于</a></li></ul></div>";
 	if(document.URL.indexOf("v2") == -1)
 	{
 		text += "<div data-role=\"content\" style=\"margin-top:5em;\"><a href=\"kancollev2.html\" target=\"blank\"><button>此页面已经停止维护,点击此前往新版</button></a></div>";
@@ -63,11 +61,21 @@ else
 	text += "\n<h1>Kantai Collection Notification(Ver1.5)</h1>";
 	text += "\n</div><div data-role=\"navbar\" style=\"margin-top:1.52em;width:100%;\">;"
 	text += "\n<ul><li><a href=\"#home\" data-transition=\"slide\" data-direction=\"reverse\" data-icon=\"home\">首页</a></li>";
-	text += "\n<li><a style=\"width:100%;\" href=\"#twitter\" data-icon=\"arrow-r\">官推截图</a></li></ul></div>";
+	text += "\n<li><a href=\"#twitter\" data-icon=\"arrow-r\">官推截图</a></li>";
+	text += "\n<li><a href=\"#about\" data-icon=\"info\" data-transition=\"slide\">关于</a></li>";
+	text += "</ul></div>";
 	text += "\n<div data-role=\"content\" id=\"twitter1\" data-theme=\"c\" style=\"position:relative;margin-top:5em;\">";
 	text += btncookie(2);
-	text += "\n<iframe id=\"ifm\" frameborder=\"0\" height=\"4800em\" scrolling=\"no\"  align=\"middle\" marginwidth=\"40px\"  marginheight=\"80px\"  width=\"100%\" style=\"margin-top:-2.3em;\"   src=\"http://www.haoyuan.info/twitter/index.php?t=20&get=tweet\"></iframe>";
+	text += "\n<iframe id=\"ifm\" frameborder=\"0\" height=\"4800em\" scrolling=\"no\"  align=\"middle\" marginwidth=\"40px\"  marginheight=\"80px\"  width=\"100%\" style=\"margin-top:-2.3em;\" src=\"http://www.haoyuan.info/twitter/index.php?t=20&get=tweet\"></iframe>";
 	text += "\n</div><br><div data-role=\"footer\" id=\"footer_1\" style=\"position:fixed;bottom:0px;right:0px;width:100%;\"><h1></h1></div></div>";
+	text += "\n<div data-role=\"page\" data-theme=\"a\" id=\"about\">";
+	text += "\n<div data-role=\"header\" style=\"position:fixed;top:0px;right:0px;width:100%;z-index:999\">";
+	text += "\n<h1>Kantai Collection Notification(Ver1.5)</h1>";
+	text += "\n</div><div data-role=\"navbar\" style=\"margin-top:1.52em;width:100%;\">;"
+	text += "\n<ul><li><a href=\"#home\" data-transition=\"slide\" data-direction=\"reverse\" data-icon=\"home\">首页</a></li>";
+	text += "\n<li><a href=\"#twitter\" data-icon=\"arrow-r\" data-transition=\"slide\" data-direction=\"reverse\">官推截图</a></li><li><a href=\"#about\" data-icon=\"info\" data-transition=\"slide\">关于</a></li></ul></div>";
+	text += "\n<div data-role=\"content\" id=\"test\" data-theme=\"c\" style=\"position:relative;margin-top:5em;\">";
+	text += "\n</div><br><div data-role=\"footer\" id=\"footer_2\" style=\"position:fixed;bottom:0px;right:0px;width:100%;\"><h1></h1></div></div>";
 	if(getCookie("language")=="chinese")
 	{
 		$(document).ready(function(e) {
@@ -84,7 +92,7 @@ else
             });
 	}
 	$(document).on("pageinit","#home",function(){
-  		$("div").on("swipeleft",function(){
+  		$("div#home").on("swipeleft",function(){
     		$.mobile.changePage("#twitter",
 			{
 		    	   transition : "slide"
@@ -93,7 +101,16 @@ else
   		});                       
 	});
 	$(document).on("pageinit","#twitter",function(){
-  		$("div").on("swiperight",function(){
+		$("div#twitter").on("swipeleft",function(){
+			$.mobile.changePage("#about",
+			{
+				transition : "slide"
+			}
+			);
+		});
+	});
+	$(document).on("pageinit","#twitter",function(){
+  		$("div#twitter").on("swiperight",function(){
    			$.mobile.changePage("#home", {  
                 transition : "slide",  
             	    reverse : true  
@@ -107,6 +124,14 @@ $(document).on("pageinit","#twitter",function(){
                 reverse : true  
             }, true, true);  
   });                       
+});
+$(document).on("pageinit","#about",function(){
+	$("div#about").on("swiperight",function (){
+		$.mobile.changePage("#twitter",{
+			transition :　"slide",
+			reverse : true
+		},true,true);
+	});
 });
 $(document).ready(function(e) {
     $("a#changecn").click(function()
@@ -129,10 +154,12 @@ document.write(text);
 var footer = new Object();
 footer = document.getElementById("footer");
 var yr=new Date();
-var copyright = "<p align=\"center\"><span class=\"bold\" id=\"fcopy\">Copyright © 2014-"+(parseInt(yr.getYear())+1900)+" All rights reserved</span></p>";
+var copyright = "<p align=\"center\"><span class=\"bold\" id=\"fcopy\">Copyright © 2014-"+(parseInt(yr.getFullYear()))+" All rights reserved</span></p>";
 footer.innerHTML = copyright;
 var footer_1 = document.getElementById("footer_1");
-footer_1.innerHTML = "<p align=\"center\"><span class=\"bold\" id=\"fcopy1\">Copyright © 2014-"+(parseInt(yr.getYear())+1900)+" All rights reserved</span></p>";
+footer_1.innerHTML = "<p align=\"center\"><span class=\"bold\" id=\"fcopy1\">Copyright © 2014-"+(parseInt(yr.getFullYear()))+" All rights reserved</span></p>";
+var footer_2 = document.getElementById("footer_2");
+footer_2.innerHTML = "<p align=\"center\"><span class=\"bold\" id=\"fcopy2\">Copyright © 2014-"+(parseInt(yr.getFullYear()))+" All rights reserved</span></p>";
 forIE();
 if(returnUserAgent("useragent") != "Mobile")
 {
@@ -153,6 +180,8 @@ else if(returnUserAgent("useragent") == "Mobile")
 	a.fontSize="20px";
 	var b=document.getElementById("fcopy1").style;
 	b.fontSize="20px";	
+	var c=document.getElementById("fcopy2").style;
+	c.fontSize="20px";
 }
 loadinganimation();
 if(window.console)
@@ -267,33 +296,6 @@ $("a#cookie_a").remove();
 $("a#test").click(function(){
 	$("div#alert-dialog").hide();
 })
-function returnUserAgent(action)
-{
-var x=navigator;
-var ua=x.userAgent;
-var isMobile=ua.indexOf("Android"||"iOS"||"iPad"||"iPhone"||"Windows Phone");
-var isIE=ua.indexOf("Internet Explorer");
-var isTrident=ua.indexOf("Trident");
-if(action=="useragent")
-{
-if(isMobile!=-1)
-{
-	return "Mobile";	
-}
-if(isIE!=-1)
-{
-	return "IE";
-}
-if(isTrident!=-1)
-{
-	return "Trident";	
-}
-}
-else if(action=="version")
-{
-	return parseFloat(x.appVersion);	
-}
-}
 function btncookie(code)
 {
 	var co=getCookie("mobileplayer")+getCookie("flashplayer");

@@ -92,6 +92,7 @@
 	}
 	$CountNum=0;
 	$Count_Num=0;
+	$maintenance_flag=0;
 	$maintenancetweet="";
 	# The tweets loop
 	foreach ($twitter_data as $tweet) {
@@ -248,31 +249,24 @@ if($CountNum==0)
 $firstTweet=$formattedTweet;	
 }
 $nextd=preg_match("/(?:、)【[\s\S]*?\/[\s\S]*?】(?=以降)/",$formattedTweet,$nextdate);
+$mainten=preg_match("/メンテナンス/",$formattedTweet,$maintenance_text);
 if($nextd==1&&$Count_Num==0)
 {
 	$next_text=$nextdate[0];
 	$next_text=str_replace("、","",$next_text);
 	$Count_Num++;
 }
-	if(preg_match("/【[\s\S]+?/[\s\S]+?】[\s\S]+?メンテナンス/",$formattedTweet,$mainten)==1&&$maintenancetweet!="")
-	{
-		$maintenancetweet=$formattedTweet;
-	}	
-	else
-	{
-		$maintenancetweet+="ts";	
-	}
+if($mainten==1&&$maintenance_flag==0)
+{
+	$maintenancetweet=$formattedTweet;
+	$maintenance_flag++;	
+}
 	$CountNum++;
 	}	# End tweets loop
-	$endCode=preg_match("/終了/",$firstTweet,$isEnd);
-	/*if($maintenancetweet!="")
-	{
-		if($_GET['maintenance']=="1")
-		{
-			header('Content-Type:application/x-javascript;charset=utf-8');
-			echo $maintenancetweet;
-		}	
-	}*/
+$mainten_flag=preg_match("/【[\s\S]+?】/",$maintenancetweet,$mainten_time);
+$mainten_month_flag=preg_match("/\d{1,2}/",$mainten_time[0],$mainten_m);
+$mainten_date_flag=preg_match("/\d{1,2}(?=\()/",$mainten_time[0],$mainten_d);
+$mainten_weekday_flag=preg_match("/[\x80-\xff]{1,9}(曜)*日/",$mainten_time[0],$mainten_w);
 		if($_GET['e']=="end")
 		{
 			header('Content-Type:application/x-javascript;charset=utf-8');
@@ -289,6 +283,11 @@ if($nextd==1&&$Count_Num==0)
 		{
 			header('Content-Type:application/x-javascript;charset=utf-8');
 			echo $next_text;	
+		}
+		if($_GET['e']=="maintenance")
+		{
+			header('Content-Type:application/x-javascript;charset=utf-8');
+			echo $mainten_time[0];
 		}
 	# Close the timeline list
 	if($_GET['e']=="")

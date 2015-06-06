@@ -59,6 +59,7 @@ function maincore(readycode)
 		txt += "<h4>当前活动:" + (Number(g.getYear()) + 1900) + "年【" + comma(event_name, "[【】]") + "】</h4>";
 	}
 	txt += _event();
+	txt += maintenance(maintenance_m,maintenance_d);
 	var dom_time = document.getElementById("time");
 	dom_time.innerHTML = txt;
 }
@@ -119,7 +120,10 @@ function remindTimezoneChange()
 	var _timezone = v.getTimezoneOffset() / 60;
 	if(_timezone != -9)
 	{
+		if(returnUserAgent("useragent") != "Mobile")
+		{
 		alert("您的电脑时区不是日本时区\n若需要抢号请将电脑时区更改为日本东京时区");
+		}
 	}
 
 }
@@ -228,7 +232,7 @@ function timecount(month, date, hour, minute)
 	var htmlo = document.getElementById("countdown");
 	if(hour != null && minute != null)
 	{
-		var etime = (getMonthSec(month) + date) * 24 * 60 * 60 + hour * 60 * 60 + minute * 60;
+		var etime = (getMonthSec(month) + date) * 24 * 60 * 60 + Timezone(hour) * 60 * 60 + minute * 60;
 		var nowtime = (getMonthSec(nm) + nd) * 24 * 60 * 60 + nh * 60 * 60 + nmi * 60;
 		var mtime = etime - nowtime;
 		var ld, lh, lmi, ls = new Number();
@@ -255,11 +259,11 @@ function timecount(month, date, hour, minute)
 				//maincore();
 				if(ld == 0)
 				{
-					htmlo.innerHTML = "<h4>距离抢号时间还有<br>" + seczero(Timezone(lh)) + "小时" + seczero(lmi) + "分" + seczero(ls) + "秒</h4>";
+					htmlo.innerHTML = "<h4>距离抢号时间还有<br>" + seczero(lh) + "小时" + seczero(lmi) + "分" + seczero(ls) + "秒</h4>";
 				}
 				else
 				{
-					htmlo.innerHTML = "<h4>距离抢号时间还有<br>" + seczero(ld) + "日" + seczero(Timezone(lh)) + "小时" + seczero(lmi) + "分" + seczero(ls) + "秒</h4>";
+					htmlo.innerHTML = "<h4>距离抢号时间还有<br>" + seczero(ld) + "日" + seczero(lh) + "小时" + seczero(lmi) + "分" + seczero(ls) + "秒</h4>";
 				}
 			}
 			t = setTimeout("timecount(month,date,hour,minute)", 1000);
@@ -319,6 +323,10 @@ function nowtimesec()
 	var mi = now.getMinutes();
 	var nowplus = getMonthSec(m).toString() + (d * 24 * 60).toString() + (h * 60).toString() + mi.toString();
 	return nowplus;
+}
+function maintenance(maintenance_m,maintenance_d)
+{
+		return "<h4>下一次维护的时间是"+maintenance_m+"月"+maintenance_d+"日</h4>";
 }
 function XMLRefresh()
 {
@@ -384,7 +392,7 @@ function XMLRefresh()
 		{
 				clearTimeout(timeout);
 				document.getElementById("loading").innerHTML="<h3>加载失败！</h3>";
-				setTimeout(function(){$("div#loading").hide("slow");},3000);},10000);
+				setTimeout(function(){$("div#loading").hide("slow");},3000);},18000);
 		});
 }
 function loaded()
