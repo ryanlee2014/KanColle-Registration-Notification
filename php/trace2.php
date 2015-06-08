@@ -507,9 +507,9 @@ else if($client=="xml")
 	echo "<event_end_month>".$event_end_month[0]."</event_end_month>\n";
 	echo "<event_end_date>".$event_end_date[0]."</event_end_date>\n";
 	echo "<event_end_weekday>".$event_end_weekday[0]."</event_end_weekday>\n";
-	echo "<maintenance_m>".$mainten_m[0]."</maintenance_m>";
-	echo "<maintenance_d>=".$mainten_d[0]."</maintenance_d>";
-	echo "<maintenance_w>".$mainten_w[0]."</maintenance_w>";	
+	echo "<maintenance_m>".$valmaintenance_m."</maintenance_m>";
+	echo "<maintenance_d>".$valmaintenance_d."</maintenance_d>";
+	echo "<maintenance_w>".$valmaintenance_w."</maintenance_w>";	
 	echo "</document>";
 }
 else if($client=="json")

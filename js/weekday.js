@@ -161,3 +161,213 @@ var isIE = function(ver){
     b.innerHTML = '<!--[if IE ' + ver + ']><i></i><![endif]-->'
     return b.getElementsByTagName('i').length === 1
 }
+function getCookie(c_name)
+{
+	if (document.cookie.length>0)
+	{ 
+		c_start=document.cookie.indexOf(c_name + "=");
+		if (c_start!=-1)
+		{ 
+			c_start=c_start + c_name.length+1; 
+			c_end=document.cookie.indexOf(";",c_start);
+			if (c_end==-1) 
+			{
+				c_end=document.cookie.length;
+			}
+			return unescape(document.cookie.substring(c_start,c_end));
+		} 
+	}
+	return "";
+}
+function setCookie(name,value,expiredays)
+{
+	var exdate=new Date();
+	exdate.setDate(exdate.getDate()+expiredays);
+	document.cookie=name+"="+escape(value)+((expiredays==null)?"":";expires="+exdate.toGMTString());
+}
+function nowtimesec(code)
+{
+	var now = new Date();
+	var y = now.getFullYear();
+	var m = (now.getMonth() + 1);
+	var d = now.getDate();
+	var h = now.getHours();
+	var mi = now.getMinutes();
+	var nowplus;
+	if(code==""||code==null)
+	{
+	    nowplus = getMonthSec(m).toString() + (d * 24 * 60).toString() + (h * 60).toString() + mi.toString();
+	}
+	else if(code=="number")
+	{
+		nowplus = (getMonthSec(m)+d)*24*60+(h*60)+mi;	
+	}
+	return nowplus;
+}
+function timecompare(month, date, hour, minutes)
+{
+	var minuteplus = new Number();
+	minuteplus = (getMonthSec(month) + date) * 24 * 60 + hour * 60 + minutes;
+	return minuteplus;
+}
+//本js大小对比
+function maxnum(val1, val2)
+{
+	if(val1 <= val2)
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
+function mmax(val1, val2)
+{
+	if(val1 + 1 <= val2)
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
+function _screenwidth(id)
+{
+	var thiswidth = screen.availWidth;
+	var x = document.getElementById(id);
+	x.style.width = thiswidth * 0.95;
+}
+//时区--UTF
+function reTimezone()
+{
+	var d = new Date();
+	var date = d.getTimezoneOffset() / 60;
+	date = -date;
+	if(date > 0)
+	{
+		return "+" + Math.round(date);
+	}
+	else
+	{
+		return Math.round(date);
+	}
+}
+function Timezone(hour)
+{
+	var a = new Date();
+	var timezone = parseInt(a.getTimezoneOffset() / 60);
+	var _hour = Math.round(hour + (-9 - timezone));
+	return Math.round(_hour);
+}
+//时区
+function remindTimezoneChange()
+{
+	var v = new Date();
+	var _timezone = v.getTimezoneOffset() / 60;
+	if(_timezone != -9)
+	{
+		if(returnUserAgent("useragent") != "Mobile")
+		{
+		alert("您的电脑时区不是日本时区\n若需要抢号请将电脑时区更改为日本东京时区");
+		}
+	}
+}
+//倒计时显示相关
+function seczero(second)
+{
+	if(second < 10)
+	{
+		return "0" + second;
+	}
+	else
+	{
+		return second;
+	}
+}
+//替换相关
+function comma(str, regexp)
+{
+	var reg = new RegExp(regexp, "g");
+	var x = str;
+	x = x.replace(reg, "");
+	return x;
+}
+function mobile()
+{
+	var x = navigator;
+	var ua = x.userAgent;
+	var isMobile = ua.indexOf("Android" || "iOS" || "iPad" || "iPhone" || "Windows Phone");
+	if(isMobile != -1)
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
+function maintenance(maintenance_m,maintenance_d)
+{
+		return "<h4>下一次维护的时间是"+maintenance_m+"月"+maintenance_d+"日</h4>";
+}
+function returnTime()
+{
+	var time = new Date();
+	var _year = time.getFullYear();
+	var _month = time.getMonth() + 1;
+	var _date = time.getDate();
+	var _hour = time.getHours();
+	var _minute = time.getMinutes();
+	var _second = time.getSeconds();
+	return "现在的时间:<br><br>" + _year + "年" + _month + "月" + _date + "日<br><br>" + _hour + "时" + seczero(_minute) + "分" + seczero(_second) + "秒";
+}
+function console_activity()
+{
+	if(window.console)
+	{
+	console.info("%cTimepast function output code:" + timepast(month, date, hour, minute), "font-size:18px");
+	console.info("Event showed completed!");
+	console.warn("活动时间" + event_year + "活动名" + event_name);
+	console.log("%cMonth:" + month + " Date:" + date + " Hour:" + Timezone(hour) + " Minute:" + minute, "font-size:21px;");
+	}
+}
+function nowtime()
+{
+	var nowtimecontent = document.getElementById("nowtime");
+	nowtimecontent.innerHTML = "<h4>" + returnTime() + "</h4>";
+	setTimeout("nowtime()", 1000);
+}
+function forIE()
+{
+	if(isIE())
+	{
+		alert("您正在使用Internet Explorer或IE内核的浏览器浏览该网页\n由于IE内核Trident对JQuery Mobile的兼容性限制，在Internet Explorer 8平台上会出现页面元素排布不正确的情况。\n推荐您使用Webkit内核的浏览器浏览\n（如Chrome浏览器、搜狗浏览器高速模式、360极速浏览器、Safari等）\n或将浏览器更新到Internet Explorer 9 及以上\n(仍会有部分功能不能正常运作)");
+	}
+}
+function aboutTxtOutput()
+{
+	var text = "<h2>本脚本已维护"+timeGo()+"天<br>";
+	text += "目前本脚本已经实现的功能有：<br>";
+	text += "抓取官方推特中的<br>";
+	text += "&nbsp;抢号时间<br>&nbsp;维护时间<br>&nbsp;活动时间<br>";
+	text += "转发官方推特内容并进行简单的关键词翻译<br>";
+	text += "即将实现的功能有<br>";
+	text +=	"外链插件(图片)<br>";
+	text += "本项目的代码已经开源，请遵循开放源代码许可。<br>";
+	text += "GitHub 地址:<a href=\"https://github.com/ryanlee2014/KanColle-Registration-Notification/\" target=\"_blank\">https://github.com/ryanlee2014/KanColle-Registration-Notification/</a><br>";
+	text += "来自PRC的问候 --<a href=\"mailto:gxlhybh@gmail.com\">Ryan</a></h2>";	
+	document.getElementById("about_text").innerHTML=text;
+}
+function timeGo()
+{
+var now=nowtimesec("number");
+console.log(now);
+var that=timecompare(2,21,0,0);
+console.log(that);
+var exsec=now-that;
+console.log(exsec);
+var d = parseInt((exsec/(60*24)));
+return d;
+}

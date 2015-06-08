@@ -58,7 +58,7 @@ else
 	text += "\n<div data-role=\"footer\" style=\"position:fixed;bottom:0px;right:0px;width:100%;\" id=\"footer\"><h1></h1></div></div>";
 	text += "\n<div data-role=\"page\" data-theme=\"a\" id=\"twitter\">";
 	text += "\n<div data-role=\"header\" style=\"position:fixed;top:0px;right:0px;width:100%;z-index:999\">";
-	text += "\n<h1>Kantai Collection Notification(Ver1.5)</h1>";
+	text += "\n<h1>Kantai Collection Notification(Ver1.5.2)</h1>";
 	text += "\n</div><div data-role=\"navbar\" style=\"margin-top:1.52em;width:100%;\">;"
 	text += "\n<ul><li><a href=\"#home\" data-transition=\"slide\" data-direction=\"reverse\" data-icon=\"home\">首页</a></li>";
 	text += "\n<li><a href=\"#twitter\" data-icon=\"arrow-r\">官推截图</a></li>";
@@ -70,11 +70,11 @@ else
 	text += "\n</div><br><div data-role=\"footer\" id=\"footer_1\" style=\"position:fixed;bottom:0px;right:0px;width:100%;\"><h1></h1></div></div>";
 	text += "\n<div data-role=\"page\" data-theme=\"a\" id=\"about\">";
 	text += "\n<div data-role=\"header\" style=\"position:fixed;top:0px;right:0px;width:100%;z-index:999\">";
-	text += "\n<h1>Kantai Collection Notification(Ver1.5)</h1>";
+	text += "\n<h1>Kantai Collection Notification(Ver1.5.2)</h1>";
 	text += "\n</div><div data-role=\"navbar\" style=\"margin-top:1.52em;width:100%;\">;"
 	text += "\n<ul><li><a href=\"#home\" data-transition=\"slide\" data-direction=\"reverse\" data-icon=\"home\">首页</a></li>";
 	text += "\n<li><a href=\"#twitter\" data-icon=\"arrow-r\" data-transition=\"slide\" data-direction=\"reverse\">官推截图</a></li><li><a href=\"#about\" data-icon=\"info\" data-transition=\"slide\">关于</a></li></ul></div>";
-	text += "\n<div data-role=\"content\" id=\"test\" data-theme=\"c\" style=\"position:relative;margin-top:5em;\">";
+	text += "\n<div data-role=\"content\" id=\"about_text\" data-theme=\"c\" style=\"position:relative;margin-top:0em;\">";
 	text += "\n</div><br><div data-role=\"footer\" id=\"footer_2\" style=\"position:fixed;bottom:0px;right:0px;width:100%;\"><h1></h1></div></div>";
 	if(getCookie("language")=="chinese")
 	{
@@ -189,37 +189,6 @@ if(window.console)
 console.timeEnd("running bodyvalue use time");
 }
 //函数部分
-function forIE()
-{
-	if(isIE())
-	{
-		alert("您正在使用Internet Explorer或IE内核的浏览器浏览该网页\n由于IE内核Trident对JQuery Mobile的兼容性限制，在Internet Explorer 8平台上会出现页面元素排布不正确的情况。\n推荐您使用Webkit内核的浏览器浏览\n（如Chrome浏览器、搜狗浏览器高速模式、360极速浏览器、Safari等）\n或将浏览器更新到Internet Explorer 9 及以上\n(仍会有部分功能不能正常运作)");
-	}
-}
-function getCookie(c_name)
-{
-	if (document.cookie.length>0)
-	{ 
-		c_start=document.cookie.indexOf(c_name + "=");
-		if (c_start!=-1)
-		{ 
-			c_start=c_start + c_name.length+1; 
-			c_end=document.cookie.indexOf(";",c_start);
-			if (c_end==-1) 
-			{
-				c_end=document.cookie.length;
-			}
-			return unescape(document.cookie.substring(c_start,c_end));
-		} 
-	}
-	return "";
-}
-function setCookie(name,value,expiredays)
-{
-	var exdate=new Date();
-	exdate.setDate(exdate.getDate()+expiredays);
-	document.cookie=name+"="+escape(value)+((expiredays==null)?"":";expires="+exdate.toGMTString());
-}
 function checkCookie()
 {
 	if(returnUserAgent("useragent") == "Mobile")
@@ -332,14 +301,6 @@ function btncookie(code)
 			}
 		}
 	}
-}
-function showbtn_cn()
-{
-	$("a#changecn").show();
-}
-function showbtn_jp()
-{
-	$("a#changjp").show();	
 }
 function loadinganimation()
 {
