@@ -22,6 +22,10 @@
 	$url = 'https://api.twitter.com/1.1/statuses/user_timeline.json';
 	$twitterUsername = "KanColle_STAFF";
 	$tweetCount = $_GET['t'];
+	if($tweetCount=="")
+	{
+		$tweetCount=20;	
+	}
 	// Use private tokens for development if they exist; delete when no longer necessary
 	$tokens = '_utils/tokens.php';
 	is_file($tokens) AND include $tokens;
@@ -93,6 +97,9 @@
 	$CountNum=0;
 	$Count_Num=0;
 	$maintenance_flag=0;
+	$full_time_count=0;
+	$part_time_count=0;
+	$event_count=0;
 	$maintenancetweet="";
 	# The tweets loop
 	foreach ($twitter_data as $tweet) {
@@ -248,25 +255,86 @@ if($CountNum==0)
 {
 $firstTweet=$formattedTweet;	
 }
-$nextd=preg_match("/(?:、)【[\s\S]*?\/[\s\S]*?】(?=以降)/",$formattedTweet,$nextdate);
+$nextd=preg_match("/【\d*?\/[\s\S]*?】/",$formattedTweet,$nextdate);
 $mainten=preg_match("/メンテナンス/",$formattedTweet,$maintenance_text);
+$mainten_s_flag=preg_match("/開始時間は/",$formattedTweet,$mainten_s_flag_text);
+$mainten_intxt_flag=preg_match("/【[\s\S]+?\/[\s\S]+?】/",$formattedTweet,$mainten_text_flag);
+$netim=preg_match("/\d+\/\d+\([\x80-\xff]*(曜)*日\)\s*\d+:\d+(\s*)(?=】)/",$formattedTweet,$full_time_text);
+$ntp=preg_match("/：【\d+\/\d+\(\S+\)(\S*)\】/",$formattedTweet,$nowtimepart);
+$evti=preg_match("/イベント[\s\S]+?曜日\)/",$contents,$event_time);
+if($evti==1&&$event_count==0)
+{
+	$event_text=$event_time[0];	
+}
+if($ntp==1&&$part_time_count==0)
+{
+	$part_time_value=$nowtimepart[0];
+	preg_match("/約[\s\S]+?名/",$formattedTweet,$part_people);
+	$part_people_number=str_replace("約","",$part_people[0]);
+	$part_people_number=str_replace("名","",$part_people_number);
+	$part_time_value=str_replace("：","",$part_time_value);
+	$part_time_value=str_replace("【","",$part_time_value);
+	$part_time_value=str_replace("】","",$part_time_value);
+	$part_time_count++;	
+}
 if($nextd==1&&$Count_Num==0)
 {
 	$next_text=$nextdate[0];
 	$next_text=str_replace("、","",$next_text);
+	$next_text=str_replace("明","",$next_text);
+	$next_text=str_replace("後","",$next_text);
+	$next_text=str_replace("日【","",$next_text);
+	$next_text=str_replace("【","",$next_text);
+	$next_text=str_replace("】","",$next_text);
 	$Count_Num++;
 }
-if($mainten==1&&$maintenance_flag==0)
+if($netim==1&&$full_time_count==0)
+{
+	$full_time_value=$full_time_text[0];
+	preg_match("/約[\s\S]+?名/",$formattedTweet,$full_people);
+	$full_people_number=str_replace("約","",$full_people[0]);
+	$full_people_number=str_replace("名","",$full_people_number);
+	$full_time_count++;
+}
+if($mainten==1&&$mainten_s_flag==1&&$maintenance_flag==0&&$mainten_intxt_flag==1)
 {
 	$maintenancetweet=$formattedTweet;
 	$maintenance_flag++;	
 }
 	$CountNum++;
 	}	# End tweets loop
-$mainten_flag=preg_match("/【[\s\S]+?】/",$maintenancetweet,$mainten_time);
+$event_name_flag=preg_match("/期間限定海域【[\s\S]+?】/",$event_text,$event_name);
+$event_name_value=str_replace("期間限定海域","",$event_name[0]);
+$event_name_value=str_replace("【","",$event_name_value);
+$event_name_value=str_replace("】","",$event_name_value);
+$event_month_flag=preg_match("/\d{1,2}(?=\/)/",$event_text,$event_month);
+$event_month_value=$event_month[0];
+$event_date_flag=preg_match("/\d{1,2}(?=\()/",$event_text,$event_date);
+$event_date_value=$event_date[0];
+$event_weekday_flag=preg_match("/[\x80-\xff]{1,9}(曜)*日/",$event_text,$event_weekday);
+$event_weekday_value=$event_weekday[0];
+$mainten_divide=preg_match("/【[\s\S]+?\/[\s\S]+?】/",$maintenancetweet,$mainten_time);
 $mainten_month_flag=preg_match("/\d{1,2}/",$mainten_time[0],$mainten_m);
 $mainten_date_flag=preg_match("/\d{1,2}(?=\()/",$mainten_time[0],$mainten_d);
 $mainten_weekday_flag=preg_match("/[\x80-\xff]{1,9}(曜)*日/",$mainten_time[0],$mainten_w);
+$mainten_start=preg_match("/開始時間は【[\s\S]+?】/",$maintenancetweet,$mainten_s);
+$mainten_end=preg_match("/完了は【[\s\S]+?】/",$maintenancetweet,$mainten_e);
+$maintenance_s=str_replace("開始時間は","",$mainten_s[0]);
+$maintenance_e=str_replace("完了は","",$mainten_e[0]);
+$maintenance_s=str_replace("【","",$maintenance_s);
+$maintenance_e=str_replace("【","",$maintenance_e);
+$maintenance_s=str_replace("】","",$maintenance_s);
+$maintenance_e=str_replace("】","",$maintenance_e);
+$maintenance_time=str_replace("】","",$mainten_time[0]);
+$maintenance_time=str_replace("【","",$maintenance_time);
+if($maintenance_s=="")
+{
+	$maintenance_s="null";	
+}
+if($maintenance_e=="")
+{
+	$maintenance_e="null";	
+}
 		if($_GET['e']=="end")
 		{
 			header('Content-Type:application/x-javascript;charset=utf-8');
@@ -287,7 +355,33 @@ $mainten_weekday_flag=preg_match("/[\x80-\xff]{1,9}(曜)*日/",$mainten_time[0],
 		if($_GET['e']=="maintenance")
 		{
 			header('Content-Type:application/x-javascript;charset=utf-8');
-			echo $mainten_time[0];
+			echo "mainten=".$mainten_time[0]."end\n";
+			echo "start_time=".$maintenance_s."end\n";
+			echo "stop_time=".$maintenance_e."end\n";
+		}
+		if($_GET['e']=="full")
+		{
+			header('Content-Type:application/x-javascript;charset=utf-8');
+			echo $full_time_value;	
+		}
+		if($_GET['e']=="part")
+		{
+			header('Content-Type:application/x-javascript;charset=utf-8');
+			echo $part_time_value;
+		}
+		if($_GET['e']=="api")
+		{
+			header('Content-Type:application/x-javascript;charset=utf-8');
+			echo "full_time".$full_time_value." full_people_num".$full_people_number."end_people"."full_time_end\n";
+			echo "part_time".$part_time_value." part_people_num".$part_people_number."end_people"."part_time_end\n";
+			echo "next_time".$next_text."next_time_end\n";
+			echo "mainten_time".$maintenance_time."mainten_time_end\n";
+			echo "start_time=".$maintenance_s."start_time_end\n";
+			echo "stop_time=".$maintenance_e."stop_time_end\n";
+			echo "event_name".$event_name_value."event_name_end\n";
+			echo "event_month".$event_month_value."event_month_end\n";
+			echo "event_date".$event_date_value."event_date_end\n";
+			echo "event_weekday".$event_weekday_value."event_weekday_end\n";	
 		}
 	# Close the timeline list
 	if($_GET['e']=="")

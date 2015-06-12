@@ -30,11 +30,11 @@ if($flag)
 <?php
 }
 ?>
-	<?php include_once('_includes/twitter.php'); ?>
-	<?php
+<?php include_once('_includes/twitter.php'); ?>
+<?php
 	if($flag)
 	{
-		?>
+?>
 	<footer>
 		<a style="font-family:微软雅黑,黑体" href="https://github.com/kmaida/twitter-timeline-php">twitter-timeline-php</a> on <a href="http://github.com">GitHub</a><br>
 		GNU Public License
@@ -50,5 +50,4 @@ if($flag)
 </html>
 <?php
 	}
-	?>
-	
+?>	

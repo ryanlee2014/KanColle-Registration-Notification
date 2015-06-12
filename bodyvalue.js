@@ -27,6 +27,10 @@ var event_end_weekday=new String();
 var maintenance_m=new Number();
 var maintenance_d=new Number();
 var maintenance_w=new Number();
+var maintenance_start_hour=new Number();
+var maintenance_start_minute=new Number();
+var maintenance_end_hour=new Number();
+var maintenance_end_minute=new Number();
 count=0;
 //HTML body elements
 	if(isIE(5)||isIE(6)||isIE(7))
@@ -44,10 +48,6 @@ else
 	text +="</div><div data-role=\"navbar\" style=\"margin-top:2.7em;\">";
 	text +="<ul><li>";
 	text +="<a href=\"#home\"  data-icon=\"home\">首页</a></li><li><a href=\"#twitter\" data-transition=\"slide\" data-icon=\"arrow-r\">官推截图</a></li><li><a href=\"#about\" data-icon=\"info\" data-transition=\"slide\">关于</a></li></ul></div>";
-	if(document.URL.indexOf("v2") == -1)
-	{
-		text += "<div data-role=\"content\" style=\"margin-top:5em;\"><a href=\"kancollev2.html\" target=\"blank\"><button>此页面已经停止维护,点击此前往新版</button></a></div>";
-	}
 	text += "\n<div data-role=\"content\" id=\"loading\" data-theme=\"c\" style=\"height:1em;overflow-x:visible;\"><h3></h3></div>";
 	text += "\n<div data-role=\"content\" style=\"position:relative;width:80%;\" id=\"time\" data-theme=\"c\"></div>";
 	text += "\n<div data-role=\"content\" id=\"countdown\" data-theme=\"c\" style=\"float:right;top:-18em;\"></div>";
