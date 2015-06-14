@@ -38,9 +38,30 @@
 	$json = $twitter->setGetfield($getfield)	// Note: Set the GET field BEFORE calling buildOauth()
 				  	->buildOauth($url, $requestMethod)
 				 	->performRequest();
+	$json_cache = $json;
+	$json_decode = json_decode($json,true);
 	$twitter_data = json_decode($json, true);	// Create an array with the fetched JSON data
 ############################################################### 	
 	## DO SOMETHING WITH THE DATA
+	##
+	function pic_save($url,$filename)
+{
+if($url=="") return false; 
+if($filename=="") { 
+$ext=strrchr($url,"."); 
+if($ext!=".gif" && $ext!=".jpg" && $ext!=".png") return false; 
+$filename=date("YmdHis").$ext; 
+} 
+ob_start(); 
+readfile($url); 
+$img = ob_get_contents(); 
+ob_end_clean(); 
+$size = strlen($img); 
+$fp2=@fopen($filename, "w"); 
+fwrite($fp2,$img); 
+fclose($fp2); 
+}
+	##
 //-------------------------------------------------------------- Format the time(ago) and date of each tweet
 	function timeAgo($dateStr) {
 		$timestamp = strtotime($dateStr);	 
@@ -92,7 +113,7 @@
 	# Open the timeline list
 	if($_GET['e']=="")
 	{
-	echo '<ul id="tweet-list" class="tweet-list" style="width:95%;margin:auto;margin-top:1em;">';
+	echo '<ul id="tweet-list" class="tweet-list" style="width:95%;margin:auto;margin-top:1em;　border-radius: 15px;">';
 	}
 	$CountNum=0;
 	$Count_Num=0;
@@ -114,6 +135,8 @@
 		$userScreenName = $user['screen_name'];
 		$userAvatarURL = stripcslashes($user['profile_image_url']);
 		$userAccountURL = 'http://twitter.com/' . $userScreenName;		
+		# Twitter Background
+		$userBackground = $tweet['user']['profile_background_image_url'];
 		# The tweet
 		$id = number_format($tweet['id'],0,'','');
 		$formattedTweet = !$isRetweet ? formatTweet($tweet['text']) : formatTweet($retweet['text']);
@@ -184,22 +207,11 @@
 ?>
 <?php
 # Avatar Server Cache
-$url=$userAvatarURL;
-$filename="avatar.png"; 
-if($url=="") return false; 
-if($filename=="") { 
-$ext=strrchr($url,"."); 
-if($ext!=".gif" && $ext!=".jpg" && $ext!=".png") return false; 
-$filename=date("YmdHis").$ext; 
-} 
-ob_start(); 
-readfile($url); 
-$img = ob_get_contents(); 
-ob_end_clean(); 
-$size = strlen($img); 
-$fp2=@fopen($filename, "w"); 
-fwrite($fp2,$img); 
-fclose($fp2); 
+if($CountNum==1)
+{
+pic_save($userAvatarURL,"avatar.png");
+pic_save($userBackground,"background.png");	
+}
 if((!$_GET['e']=="end")||($_GET['test']=="1")){
 ?>			
 		<li style="font-family:微软雅黑,黑体;text-align:left;" id="<?php echo 'tweetid-' . $id; ?>" class="tweet<?php 
@@ -254,6 +266,7 @@ if((!$_GET['e']=="end")||($_GET['test']=="1")){
 if($CountNum==0)
 {
 $firstTweet=$formattedTweet;	
+$background_url = $userBackground;
 }
 $nextd=preg_match("/【\d*?\/[\s\S]*?】/",$formattedTweet,$nextdate);
 $mainten=preg_match("/メンテナンス/",$formattedTweet,$maintenance_text);
@@ -382,6 +395,20 @@ if($maintenance_e=="")
 			echo "event_month".$event_month_value."event_month_end\n";
 			echo "event_date".$event_date_value."event_date_end\n";
 			echo "event_weekday".$event_weekday_value."event_weekday_end\n";	
+		}
+		if($_GET['e']=="json")
+		{
+			header('Content-Type:application/json;charset=utf-8');
+			echo $json_cache;	
+		}
+		if($_GET['e']=="jsondecode")
+		{
+			header('Content-Type:application/json;charset=utf-8');
+			echo $json_decode;	
+		}
+		if($_GET['e']=="background")
+		{
+			echo "<img src=\"$background_url\"></img>";
 		}
 	# Close the timeline list
 	if($_GET['e']=="")

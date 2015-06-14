@@ -61,7 +61,6 @@ function maincore(readycode)
 		txt += "<h4>当前活动:" + (Number(g.getYear()) + 1900) + "年【" + comma(event_name, "[【】]") + "】</h4>";
 	}
 	txt += _event();
-	txt += maintenance(maintenance_m,maintenance_d,maintenance_start_hour,maintenance_start_minute,maintenance_end_hour,maintenance_end_minute);
 	var dom_time = document.getElementById("time");
 	dom_time.innerHTML = txt;
 }
@@ -213,6 +212,7 @@ function XMLRefresh()
 				eval(tracephp.responseText);
 				//倒计时调用
 				maincore(0);
+				maintenance(maintenance_m,maintenance_d,maintenance_start_hour,maintenance_start_minute,maintenance_end_hour,maintenance_end_minute);
 				mainten_count(maintenance_m,maintenance_d,maintenance_start_hour,maintenance_start_minute,maintenance_end_hour,maintenance_end_minute);
 				timecount(month,date,hour,minute);
 				asyncxml();
@@ -226,6 +226,7 @@ function XMLRefresh()
 			{
 				eval(xmlhttp.responseText);
 				maincore(1);
+				maintenance(maintenance_m,maintenance_d,maintenance_start_hour,maintenance_start_minute,maintenance_end_hour,maintenance_end_minute);
 				loaded();
 				if(window.console)
 				{

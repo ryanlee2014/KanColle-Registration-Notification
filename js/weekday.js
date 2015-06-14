@@ -292,7 +292,14 @@ function comma(str, regexp)
 	var reg = new RegExp(regexp, "g");
 	var x = str;
 	x = x.replace(reg, "");
-	return x;
+	if(x=="") 
+	{
+		return "【未知】";
+	}
+	else
+	{ 
+		return x;
+	}
 }
 function mobile()
 {
@@ -310,18 +317,19 @@ function mobile()
 }
 function maintenance(maintenance_m,maintenance_d,maintenance_start_hour,maintenance_start_minute,maintenance_end_hour,maintenance_end_minute)
 {
+	var a=document.getElementById("maintenance");
 	var flag=mainten_count(maintenance_m,maintenance_d,maintenance_start_hour,maintenance_start_minute,maintenance_end_hour,maintenance_end_minute);
 	if(flag==-1)
 	{
-		return "<div style=\"float:right;margin-top:-18em;\"><h4>下一次维护的时间:<br><br>"+maintenance_m+"月"+maintenance_d+"日&nbsp;&nbsp;("+Convert(maintenance_w)+")<br><br>开始时间 "+seczero(Timezone(maintenance_start_hour))+":"+seczero(maintenance_start_minute)+"<br><br>结束时间 "+seczero(Timezone(maintenance_end_hour))+":"+seczero(maintenance_end_minute)+"</h4></div>";
+		a.innerHTML="<h4>下一次维护的时间:<br><br>"+maintenance_m+"月"+maintenance_d+"日&nbsp;&nbsp;("+Convert(maintenance_w)+")<br><br>开始时间 "+seczero(Timezone(maintenance_start_hour))+":"+seczero(maintenance_start_minute)+"<br><br>结束时间 "+seczero(Timezone(maintenance_end_hour))+":"+seczero(maintenance_end_minute)+"</h4>";
 	}
 	else if(flag==0)
 	{
-		return "<div style=\"float:right;margin-top:-18em;\"><h4>服务器正在维护<br><br>维护时间:<br><br>"+maintenance_m+"月"+maintenance_d+"日&nbsp;&nbsp;("+Convert(maintenance_w)+")<br><br>开始时间 "+seczero(Timezone(maintenance_start_hour))+":"+seczero(maintenance_start_minute)+"<br><br>结束时间 "+seczero(Timezone(maintenance_end_hour))+":"+seczero(maintenance_end_minute)+"</h4></div>";	
+		a.innerHTML="<h4>服务器正在维护<br><br>维护时间:<br><br>"+maintenance_m+"月"+maintenance_d+"日&nbsp;&nbsp;("+Convert(maintenance_w)+")<br><br>开始时间 "+seczero(Timezone(maintenance_start_hour))+":"+seczero(maintenance_start_minute)+"<br><br>结束时间 "+seczero(Timezone(maintenance_end_hour))+":"+seczero(maintenance_end_minute)+"</h4>";	
 	}
 	else if(flag==1)
 	{
-		return "<div style=\"float:right;margin-top:-18em;\"><h4>上一次维护的时间:<br><br>"+maintenance_m+"月"+maintenance_d+"日&nbsp;&nbsp;("+Convert(maintenance_w)+")<br><br>开始时间 "+seczero(Timezone(maintenance_start_hour))+":"+seczero(maintenance_start_minute)+"<br><br>结束时间 "+seczero(Timezone(maintenance_end_hour))+":"+seczero(maintenance_end_minute)+"</h4></div>";	
+		a.innerHTML="<h4>上一次维护的时间:<br><br>"+maintenance_m+"月"+maintenance_d+"日&nbsp;&nbsp;("+Convert(maintenance_w)+")<br><br>开始时间 "+seczero(Timezone(maintenance_start_hour))+":"+seczero(maintenance_start_minute)+"<br><br>结束时间 "+seczero(Timezone(maintenance_end_hour))+":"+seczero(maintenance_end_minute)+"</h4>";	
 	}
 }
 function returnTime()
@@ -375,11 +383,8 @@ function aboutTxtOutput()
 function timeGo()
 {
 var now=nowtimesec("number");
-console.log(now);
 var that=timecompare(2,21,0,0);
-console.log(that);
 var exsec=now-that;
-console.log(exsec);
 var d = parseInt((exsec/(60*24)));
 return d;
 }
@@ -389,8 +394,6 @@ function mainten_count(mainten_m,mainten_d,mainten_start_hour,mainten_start_minu
 	var that=timecompare(mainten_m,mainten_d,mainten_end_hour,mainten_end_minute);
 	var exsec=that-now;
 	var time_part=(mainten_end_hour*60+mainten_end_minute)-(mainten_start_hour*60+mainten_start_minute);
-	console.log(exsec);
-	console.log(time_part);
 	if(exsec>time_part)
 	{
 		return -1;	

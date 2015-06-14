@@ -19,14 +19,14 @@ if($flag)
 	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 	<meta name="description" content="">
 	<meta name="keywords" content="">
-    <link rel="stylesheet" href="css/styles.css" />
    	<meta name="robots" content="index,follow">
     <script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
     <script src="js/twitter.js"></script>
-    <link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css" />
+    <link rel="stylesheet" href="http://www.haoyuan.info/css/jquery.mobile-1.4.5.min.css" />
+    <link rel="stylesheet" href="css/styles.css" />
     <script src="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
 </head>
-<body id="remove">
+<body id="remove" style="background-color:transparent">
 <?php
 }
 ?>

@@ -52,6 +52,7 @@ else
 	text += "\n<div data-role=\"content\" style=\"position:relative;width:80%;\" id=\"time\" data-theme=\"c\"></div>";
 	text += "\n<div data-role=\"content\" id=\"countdown\" data-theme=\"c\" style=\"float:right;top:-18em;\"></div>";
 	text += "\n<div data-role=\"content\" id=\"nowtime\" data-theme=\"c\"></div>";
+	text += "\n<div data-role=\"content\" id=\"maintenance\" data-theme=\"c\"></div>";
 	text += "<div data-role=\"dialog\" id=\"alert-dialog\" style=\"margin-top:2em;\"><div data-role=\"header\" data-theme=\"a\"><h1>来自网页的信息</h1></div><div role=\"main\" class=\"ui-content\" style=\"background-color:#ffffff;\"><h1>Delete cookie complete!</h1><p align=\"center\" style=\"opacity:1;\">该网页的Cookie已经从您的设备中删除。</p><a href=\"#home\" data-role=\"button\" data-theme=\"b\" id=\"test\">关闭</a></div></div>";
 	text += btncookie(1);
 	text += "<br><br><br><br><br>";
@@ -64,7 +65,7 @@ else
 	text += "\n<li><a href=\"#twitter\" data-icon=\"arrow-r\">官推截图</a></li>";
 	text += "\n<li><a href=\"#about\" data-icon=\"info\" data-transition=\"slide\">关于</a></li>";
 	text += "</ul></div>";
-	text += "\n<div data-role=\"content\" id=\"twitter1\" data-theme=\"c\" style=\"position:relative;margin-top:5em;\">";
+	text += "\n<div data-role=\"content\" id=\"twitter1\" data-theme=\"c\" style=\"position:relative;margin-top:2.1em;overflow-x:visible;　border-radius: 15px;\">";
 	text += btncookie(2);
 	text += "\n<iframe id=\"ifm\" frameborder=\"0\" height=\"4800em\" scrolling=\"no\"  align=\"middle\" marginwidth=\"40px\"  marginheight=\"80px\"  width=\"100%\" style=\"margin-top:-2.3em;\" src=\"http://www.haoyuan.info/twitter/index.php?t=20&get=tweet\"></iframe>";
 	text += "\n</div><br><div data-role=\"footer\" id=\"footer_1\" style=\"position:fixed;bottom:0px;right:0px;width:100%;\"><h1></h1></div></div>";
@@ -161,28 +162,6 @@ footer_1.innerHTML = "<p align=\"center\"><span class=\"bold\" id=\"fcopy1\">Cop
 var footer_2 = document.getElementById("footer_2");
 footer_2.innerHTML = "<p align=\"center\"><span class=\"bold\" id=\"fcopy2\">Copyright © 2014-"+(parseInt(yr.getFullYear()))+" All rights reserved</span></p>";
 forIE();
-if(returnUserAgent("useragent") != "Mobile")
-{
-	var x=document.getElementById("countdown").style;
-	var z=document.getElementById("nowtime").style;
-	z.cssFloat="right";
-	z.marginTop="-20em";
-	x.cssFloat="right";
-	x.right="-36em";	
-	x.marginTop="-9em";
-}
-else if(returnUserAgent("useragent") == "Mobile")
-{
-	var y=document.getElementById("countdown").style;
-	y.cssFloat="left";
-	y.marginTop="0em";
-	var a=document.getElementById("fcopy").style;
-	a.fontSize="20px";
-	var b=document.getElementById("fcopy1").style;
-	b.fontSize="20px";	
-	var c=document.getElementById("fcopy2").style;
-	c.fontSize="20px";
-}
 loadinganimation();
 if(window.console)
 {
