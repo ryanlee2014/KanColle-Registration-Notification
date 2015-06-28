@@ -1,4 +1,5 @@
 <?php 
+header('Access-Control-Allow-Origin:*');
 $flag=false;
 if($_GET['e']=="")
 {
@@ -21,9 +22,9 @@ if($flag)
 	<meta name="keywords" content="">
    	<meta name="robots" content="index,follow">
     <script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
-    <script src="js/twitter.js"></script>
+    <script src="http://www.haoyuan.info/twitter/js/twitter.js"></script>
     <link rel="stylesheet" href="http://www.haoyuan.info/css/jquery.mobile-1.4.5.min.css" />
-    <link rel="stylesheet" href="css/styles.css" />
+    <link rel="stylesheet" href="http://www.haoyuan.info/twitter/css/styles.css" />
     <script src="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
 </head>
 <body id="remove" style="background-color:transparent">

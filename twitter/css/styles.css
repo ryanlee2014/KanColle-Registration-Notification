@@ -63,7 +63,8 @@ footer {
 }
         #tweet-list
         {
-            background: rgba(255, 255, 255, 0.3) !important; /* IE无效，FF有效 */
+            background: rgba(255, 255, 255, 0.6) !important; /* IE无效，FF有效 */
             background: #f3f3f3;
-            filter: alpha(opacity=30);
+            filter: alpha(opacity=60);
+			border-radius: 15px;
         }

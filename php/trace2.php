@@ -1,5 +1,12 @@
 <?php
+##################################################################################################
+#   author:Ryan Lee 2015,02,21                                                                   #
+#   开放源代码:twitter-timeline-php on GitHub https://github.com/kmaida/twitter-timeline-php     #
+#   GitHub:https://github.com/ryanlee2014/KanColle-Registration-Notification/                    #
+##################################################################################################
+#####  function code ##############
 include_once("../php/function.php");
+#####  XML File get ##############
 $ajax          = $_GET['ajax'];
 $nowtime       = getdate();
 $nowmonth      = $nowtime[mon];
@@ -8,6 +15,7 @@ $nowhours      = $nowtime[hours];
 $nowminutes    = $nowtime[minutes];
 $nowyears      = $nowtime[year];
 $nowtimeplus   = isNowtime();
+####   Full time_log file #########
 $load_time_xml = new DOMDocument();
 $load_time_xml->load("../xml/time_log.xml");
 $load_time_root           = $load_time_xml->getElementsByTagName('time');
@@ -20,6 +28,8 @@ $load_time_hour           = $load_time_root_lastChild->getElementsByTagName('hou
 $load_time_minute         = $load_time_root_lastChild->getElementsByTagName('minute')->item(0)->nodeValue;
 $load_time_people         = $load_time_root_lastChild->getElementsByTagName('people')->item(0)->nodeValue;
 $load_time_xml_text       = $load_time_xml->saveXML();
+######  time_log file end ###################
+######  part time_log file start ############
 $xml_load_timestamp       = new DOMDocument();
 $xml_load_timestamp->load("../xml/time_log_part.xml");
 $xml_load_timestamp_add            = $xml_load_timestamp->getElementsByTagName('times')->item(0);
@@ -30,6 +40,8 @@ $xml_load_timestamp_month          = $xml_load_timestamp_root_lastChild->getElem
 $xml_load_timestamp_date           = $xml_load_timestamp_root_lastChild->getElementsByTagName('date')->item(0)->nodeValue;
 $xml_load_timestamp_weekday        = $xml_load_timestamp_root_lastChild->getElementsByTagName('weekday')->item(0)->nodeValue;
 $xml_load_timestamp_people         = $xml_load_timestamp_root_lastChild->getElementsByTagName('people')->item(0)->nodeValue;
+######  part time_log file end  ##############
+######  nextdate file start  #################
 $xml_load_nextdate                 = new DOMDocument();
 $xml_load_nextdate->load("../xml/nextdate.xml");
 $xml_load_nextdate_add            = $xml_load_nextdate->getElementsByTagName('times')->item(0);
@@ -39,6 +51,8 @@ $xml_load_nextdate_root_lastChild = $xml_load_nextdate_root->item($xml_load_next
 $xml_load_nextdate_month          = $xml_load_nextdate_root_lastChild->getElementsByTagName('nextmonth')->item(0)->nodeValue;
 $xml_load_nextdate_date           = $xml_load_nextdate_root_lastChild->getElementsByTagName('nextdate')->item(0)->nodeValue;
 $xml_load_nextdate_weekday        = $xml_load_nextdate_root_lastChild->getElementsByTagName('nextweekday')->item(0)->nodeValue;
+##### nextdate file end ######################
+##### maintenance file start #################
 $xml_load_maintenance             = new DOMDocument();
 $xml_load_maintenance->load("../xml/maintenance.xml");
 $xml_load_maintenance_add            = $xml_load_maintenance->getElementsByTagName('maintenances')->item(0);
@@ -52,6 +66,8 @@ $xml_load_maintenance_start_minute   = $xml_load_maintenance_root_lastChild->get
 $xml_load_maintenance_end_hour       = $xml_load_maintenance_root_lastChild->getElementsByTagName('end_hour')->item(0)->nodeValue;
 $xml_load_maintenance_end_minute     = $xml_load_maintenance_root_lastChild->getElementsByTagName('end_minute')->item(0)->nodeValue;
 $xml_load_maintenance_weekday        = $xml_load_maintenance_root_lastChild->getElementsByTagName('weekday')->item(0)->nodeValue;
+######  maintenance file end ######################
+######  variable Initialization ###################
 $valhour                             = "null";
 $valminute                           = "null";
 $valmonth                            = "null";
@@ -68,6 +84,8 @@ $mainten_end_minute                  = $xml_load_maintenance_end_minute;
 $valnextmonth                        = $xml_load_nextdate_month;
 $valnextdate                         = $xml_load_nextdate_date;
 $valnextweekday                      = $xml_load_nextdate_weekday;
+######  variable Initialization end ################
+###### xml file compare and choose  ################
 if ($load_time_month >= $xml_load_timestamp_month && $load_time_date >= $xml_load_timestamp_date)
 {
     $valmonth   = $load_time_month;
@@ -84,8 +102,10 @@ else
     $valweekday = $xml_load_timestamp_weekday;
     $valpeople  = $xml_load_timestamp_people;
 }
+###### xml file compare and choose end ##############
+###### plus xml time to second  ######################
 $maintp = time_all($nowyears, $xml_load_maintenance_month, $xml_load_maintenance_date, 0, 0);
-if ($maintp >= $nowtimeplus)
+if ($maintp >= $nowtimeplus)# if xml file time earlier than nowtime
 {
     $valmaintenance_m = $xml_load_maintenance_month;
     $valmaintenance_d = $xml_load_maintenance_date;
@@ -95,28 +115,26 @@ if ($nowmonth > $valmonth || ($nowmonth == $valmonth && $nowdate > $valdate))
 {
     $func = true;
 }
-$get      = $_GET['get'];
-$getCount = $_GET['t'];
+$get      = $_GET['get'];#get spider or not
+$getCount = $_GET['t'];#tweet number
 if ($getCount == "" || $getCount == null)
 {
+	#Initialization tweet quantity
     $getCount = 100;
 }
 if ($get == "1" || $func || $ajax == "1")
 {
+	# get twitter-php-json file (has formatted)
     global $contents;
-    global $next_contents;
-    global $maintenance;
-    $url = "http://" . $_SERVER['HTTP_HOST'] . "/twitter/index.php?e=api&t=100"; //获取内容
-    $ch  = curl_init();
-    curl_setopt($ch, CURLOPT_URL, $url);
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-    curl_setopt($ch, CURLOPT_HEADER, 0);
-    $contents = curl_exec($ch);
-    curl_close($ch);
-    //如果出现中文乱码使用下面代码 
-    //$getcontent = iconv("gb2312", "utf-8",$contents);
-    //echo $contents;
-    //功能实现正则e
+    $url = "http://" . $_SERVER['HTTP_HOST'] . "/twitter/index.php?e=api&t=".$getCount; //获取内容
+    $ch  = curl_init();#实例化curl
+    curl_setopt($ch, CURLOPT_URL, $url);#设置url
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);#以文件流方式返回
+    curl_setopt($ch, CURLOPT_HEADER, 0);#将头文件作为信息流输出
+    $contents = curl_exec($ch);#获取数据
+    curl_close($ch);#关闭连接
+    //功能实现正则
+    #获得下次的时间部分
     $nextt                = preg_match("/next_time[\s\S]+(?=next_time_end)/", $contents, $next_text);
     $next_time_text       = str_replace("next_time_end", "", $next_text[0]);
     $next_time_text       = str_replace("next_time", "", $next_time_text);
@@ -124,21 +142,25 @@ if ($get == "1" || $func || $ajax == "1")
     $neda                 = preg_match("/\d{1,2}(?=\()/", $next_time_text, $nextdate);
     $newe                 = preg_match("/[\x80-\xff]{1,9}(曜)*日/", $next_time_text, $nextweekday);
     #Finished
+    #获得下次的活动部分
     $evti                 = preg_match("/<p>(?:\S+)?(?=イベント)\S+(?:【)(\d+)\S\d+\S+(?:】)(?=\S+)/", $contents, $event_time);
     $evti_                = preg_match("/\d{1,2}(?=\/)/", $event_time[0], $event_month);
     $evti_1               = preg_match("/\d{1,2}(?=\()/", $event_time[0], $event_date);
     $event_wee            = preg_match("/(?![\(\)])[\x80-\xff]{1,5}(曜)*日/", $event_time[0], $event_weekday);
-    $pcount               = preg_match("/part_people_num[\s\S]+?(?=end_people)/", $contents, $ppe);
-    $fcount               = preg_match("/full_people_num[\s\S]+?(?=end_people)/", $contents, $fpe);
+    #获得下次的人数部分
+    $pcount               = preg_match("/part_people_num[\s\S]+?(?=end_peoplepart_time_end)/", $contents, $ppe);
+    $fcount               = preg_match("/full_people_num[\s\S]+?(?=end_peoplefull_time_end)/", $contents, $fpe);
+    #获得下次的完整部分
     $netim                = preg_match("/full_time[\s\S]+(?=full_time_end)/", $contents, $nval);
     $full_time_value      = str_replace("full_time", "", $nval[0]);
     $ntp                  = preg_match("/part_time[\s\S]+(?=part_time_end)/", $contents, $nowtimepart);
     $part_time_value      = str_replace("part_time", "", $nowtimepart[0]);
+    #获得下次的不完整部分
     $_mon                 = preg_match("/\d{1,2}/", $part_time_value, $_month);
     $_da                  = preg_match("/\d{1,2}(?=\()/", $part_time_value, $_date);
     $_weekd               = preg_match("/[\x80-\xff]{1,9}?(曜)*日/", $part_time_value, $_weekday);
-    $text                 = preg_match($part, $contents, $matches);
     $mon                  = preg_match("/\d{1,2}/", $full_time_value, $month);
+    #获得下次的完整部分
     $da                   = preg_match("/\d{1,2}(?=\()/", $full_time_value, $day);
     $week                 = preg_match("/[\x80-\xff]{1,9}(曜)*日/", $full_time_value, $weekday);
     $ho                   = preg_match("/\d{1,2}(?=:)/", $full_time_value, $hour);
@@ -163,10 +185,19 @@ if ($get == "1" || $func || $ajax == "1")
     $mainten_end_minute   = $mainten_end_m[0];
     $valmaintenance_m     = $mainten_m[0];
     $valmaintenance_d     = $mainten_d[0];
+    #如果valmaintenance值为空
+    if($valmaintenance_m=="")
+    {
+        $valmaintenance_m="null";
+    }
+    if($valmaintenance_d=="")
+    {
+        $valmaintenance_d="null";
+    }
     $valmaintenance_w     = $mainten_w[0];
     $part_people          = str_replace("part_people_num", "", $ppe[0]);
     $full_people          = str_replace("full_people_num", "", $fpe[0]);
-    //活动设定
+    //活动结束时间
     $eve                  = preg_match("/(春|夏|秋|冬)イベント\S+(?:】)/", $contents, $event);
     $eventval             = $event[0];
     $ye                   = preg_match("/[0-9]{4}/", $eventval, $event_year);
@@ -230,6 +261,7 @@ else
     $h   = $valhour;
     $mi  = $valminute;
 }
+#读取event_file.xml文件
 $load_event_xml = new DOMDocument();
 $load_event_xml->load("../xml/event_file.xml");
 $load_event_xml_length           = $load_event_xml->getElementsByTagName('event')->length - 1;
@@ -288,6 +320,7 @@ else
     $event_d = $event_date[0];
     $event_w = $event_weekday[0];
 }
+#下回时间赋值判定
 if ($nextdate[0] == "" || $nextdate[0] > 31 || $nextdate[0] < 1)
 {
     $nextdate[0] = "null";
@@ -311,9 +344,18 @@ if ($nowdate < $xml_load_nextdate)
 if ($mainten_start_hour == null || $mainten_start_hour == "")
 {
     $mainten_start_hour   = "null";
+}
+if($mainten_start_minute == null || $mainten_start_minute == "")
+{
     $mainten_start_minute = "null";
-    $mainten_end_hour     = "null";
-    $mainten_end_minute   = "null";
+}
+if($mainten_end_hour == null || $mainten_end_hour == "")
+{
+    $mainten_end_hour = "null";
+}
+if($mainten_end_minute == null || $mainten_end_minute == "")
+{
+    $mainten_end_minute = "null";
 }
 //活动文件写入
 if (!is_file("../xml/event_file.xml"))
@@ -366,6 +408,7 @@ else
 {
     if ($_GET['r'] == "refresh" && $event_month[0] != "null" && $event_month[0] != "" && $load_event_month_textnode != $event_month[0])
     {
+        #event_file.xml写入
         $xml_event_file = new DOMDocument();
         $xml_event_file->load("../xml/event_file.xml");
         $xml_event_file_root                             = $xml_event_file->getElementsByTagName('events')->item(0);
@@ -420,10 +463,6 @@ if ($xml_get == "3")
     echo $load_event_date_textnode . "\n";
     echo $load_event_name_textnode;
 }
-//$event_xml=new DOMDocument();
-//$event_xml->load(
-?>
-<?php
 //$_GET参数输出
 $client = $_GET["client"];
 $help   = $_GET["help"];
@@ -555,6 +594,7 @@ else if ($client == "xml")
 else if ($client == "json")
 {
     //json输出
+    header('Access-Control-Allow-Origin:*');
     header('Content-type: application/json;charset=utf-8;');
     $arr     = array(
         'month' => $m,
@@ -579,7 +619,6 @@ else if ($client == "json")
         'nextweekday' => $valnextweekday
     );
     $jsonval = json_encode($arr);
-    //$txt="kancolle={month:\"".$month[0]."\",date:\"".$day[0]."\",weekday:\"".$weekday[0]."\",hour:\"".$hour[0]."\",minute:\"".$minute[0]."\"}";
     echo $jsonval;
 }
 else if ($client == "" && $help == "" && $val != "")
@@ -650,39 +689,10 @@ else
         echo "<p align=\"center\"><h1>您没有返回正确的参数，请参阅<a href=\"trace.php?help=1\">API Document</a>查阅该PHP API使用参数</h1></p></body></html>";
     }
 }
-?>
-<?php
-//数据库
-$db = $_GET["db"];
-if ($db == "1")
-{
-    $db_addr = "103.27.176.9:3306";
-    $db_user = "a0311230429";
-    $db_psw  = "23201016";
-    $con     = mysql_connect($db_addr, $db_user, $db_psw);
-    if (!$con)
-    {
-        die('Could not connect:' . mysql_error());
-    }
-    else
-    {
-        header('Content-Type:text/html;charset=utf-8');
-        echo "<script>alert(\"succeed\")</script>";
-    }
-    mysql_select_db("a0311230429", $con);
-    $sql = "UPDATE kancolle SET month ='11' where month = ''";
-    mysql_query($sql, $con);
-    $result    = mysql_query("select * from kancolle where username='Jack' ", $con);
-    $userInfo  = mysql_fetch_assoc($result);
-    $thismonth = $userInfo["month"];
-    mysql_close($con);
-    echo "month:" . $thismonth;
-}
-?>
-<?php
 //log every time
 if (!is_file("../xml/time_log.xml"))
 {
+    #完整时间写入
     $xml_file             = new DOMDocument();
     $xml_root             = $xml_file->createElement('times');
     $xml_root             = $xml_file->appendChild($xml_root);
@@ -721,6 +731,7 @@ if (!is_file("../xml/time_log.xml"))
 }
 else
 {
+    #完整时间添加
     $xml_load_time = new DOMDocument();
     $xml_load_time->load("../xml/time_log.xml");
     $load_this_root      = $xml_load_time->getElementsByTagName('times')->item(0);
@@ -798,6 +809,7 @@ if ($h == "null" && $mi == "null")
 {
     if ($xml_load_timestamp_date != $dat && $_GET['r'] == "refresh")
     {
+        #部分文件内容添加写入
         $xml_timestamp_appendChild_root             = $xml_load_timestamp->createElement('time');
         $xml_timestamp_appendChild_root             = $xml_load_timestamp_add->appendChild($xml_timestamp_appendChild_root);
         $xml_timestamp_appendChild_month            = $xml_load_timestamp->createElement('month');
@@ -837,7 +849,7 @@ if ($mainp > $maintp)
     $xml_plus_maintenance_start_hour_textnode   = $xml_load_maintenance->createTextNode($mainten_start_hour);
     $xml_plus_maintenance_start_minute_textnode = $xml_load_maintenance->createTextNode($mainten_start_minute);
     $xml_plus_maintenance_end_hour_textnode     = $xml_load_maintenance->createTextNode($mainten_end_hour);
-    $xml_plus_maintenance_end_minute_textnode   = $xml_plus_maintenance->createTextNode($mainten_end_minute);
+    $xml_plus_maintenance_end_minute_textnode   = $xml_load_maintenance->createTextNode($mainten_end_minute);
     $xml_plus_maintenance_date_textnode         = $xml_plus_maintenance_date->appendChild($xml_plus_maintenance_date_textnode);
     $xml_plus_maintenance_month_textnode        = $xml_plus_maintenance_month->appendChild($xml_plus_maintenance_month_textnode);
     $xml_plus_maintenance_weekday_textnode      = $xml_plus_maintenance_weekday->appendChild($xml_plus_maintenance_weekday_textnode);
@@ -850,11 +862,11 @@ if ($mainp > $maintp)
     $xml_plus_maintenance_weekday               = $xml_plus_maintenance->appendChild($xml_plus_maintenance_weekday);
     $xml_plus_maintenance_start_hour            = $xml_plus_maintenance->appendChild($xml_plus_maintenance_start_hour);
     $xml_plus_maintenance_start_minute          = $xml_plus_maintenance->appendChild($xml_plus_maintenance_start_minute);
-    $xml_plus_maintenance_end_hour              = $xml_plus_maintenace->appendChild($xml_plus_maintenance_end_hour);
+    $xml_plus_maintenance_end_hour              = $xml_plus_maintenance->appendChild($xml_plus_maintenance_end_hour);
     $xml_plus_maintenance_end_minute            = $xml_plus_maintenance->appendChild($xml_plus_maintenance_end_minute);
     $xml_load_maintenance->save("../xml/maintenance.xml");
 }
-if ($_GET['r'] == "refresh" && $xml_load_maintenance_start_hour == "null" && $mainten_start_hour != "null")
+if ($_GET['r'] == "refresh" && ($xml_load_maintenance_start_hour == ""||$xml_load_maintenance_start_minute == ""||$xml_load_maintenance_end_hour ==""||$xml_load_maintenance_end_minute=="") && ($mainten_start_hour != "null"&&$mainten_start_minute!="null"&&$mainten_end_minute!="null"||$mainten_end_hour!="null"))
 {
     $xml_load_maintenance_root_lastChild->getElementsByTagName('start_hour')->item(0)->nodeValue   = $mainten_start_hour;
     $xml_load_maintenance_root_lastChild->getElementsByTagName('start_minute')->item(0)->nodeValue = $mainten_start_minute;
@@ -885,10 +897,6 @@ if($xml_load_timestamp_people==""&&$part_people!="")
 	$xml_load_timestamp_root_lastChild->getElementsByTagName('people')->item(0)->nodeValue=$part_people;
 	$xml_load_timestamp->save("../xml/time_log_part.xml");
 }
-?>
-<?php
-?>
-<?php
 if ($_GET['p'] == "month")
 {
     echo $m;
@@ -909,15 +917,4 @@ if ($_GET['p'] == "weekday")
 {
     echo Convert($w);
 }
-/*
-$dom=new DOMDocument('1.0','UTF-8');
-$filename="/xml/timetable.xml";
-if(file_exists($filename))
-{
-$dom->load($filename);
-}
-else
-{
-}
-*/
 ?>

@@ -270,7 +270,10 @@ function remindTimezoneChange()
 	{
 		if(returnUserAgent("useragent") != "Mobile")
 		{
-		alert("您的电脑时区不是日本时区\n若需要抢号请将电脑时区更改为日本东京时区");
+		$().ready(function(e){
+		setTimeout(function(){$("div#timezone-dialog").fadeIn(1000);},1500);
+		setTimeout(function(){$("div#timezone-dialog").fadeOut(1000);},5000);
+})
 		}
 	}
 }
@@ -319,6 +322,8 @@ function maintenance(maintenance_m,maintenance_d,maintenance_start_hour,maintena
 {
 	var a=document.getElementById("maintenance");
 	var flag=mainten_count(maintenance_m,maintenance_d,maintenance_start_hour,maintenance_start_minute,maintenance_end_hour,maintenance_end_minute);
+	if(maintenance_start_hour!=null)
+	{
 	if(flag==-1)
 	{
 		a.innerHTML="<h4>下一次维护的时间:<br><br>"+maintenance_m+"月"+maintenance_d+"日&nbsp;&nbsp;("+Convert(maintenance_w)+")<br><br>开始时间 "+seczero(Timezone(maintenance_start_hour))+":"+seczero(maintenance_start_minute)+"<br><br>结束时间 "+seczero(Timezone(maintenance_end_hour))+":"+seczero(maintenance_end_minute)+"</h4>";
@@ -330,6 +335,23 @@ function maintenance(maintenance_m,maintenance_d,maintenance_start_hour,maintena
 	else if(flag==1)
 	{
 		a.innerHTML="<h4>上一次维护的时间:<br><br>"+maintenance_m+"月"+maintenance_d+"日&nbsp;&nbsp;("+Convert(maintenance_w)+")<br><br>开始时间 "+seczero(Timezone(maintenance_start_hour))+":"+seczero(maintenance_start_minute)+"<br><br>结束时间 "+seczero(Timezone(maintenance_end_hour))+":"+seczero(maintenance_end_minute)+"</h4>";	
+	}
+	}
+	else
+	{
+	if(flag==-1)
+	{
+		a.innerHTML="<h4>下一次维护的时间:<br><br>"+maintenance_m+"月"+maintenance_d+"日&nbsp;&nbsp;("+Convert(maintenance_w)+")</h4>";
+	}
+	else if(flag==0)
+	{
+		a.innerHTML="<h4>服务器正在维护<br><br>维护时间:<br><br>"+maintenance_m+"月"+maintenance_d+"日&nbsp;&nbsp;("+Convert(maintenance_w)+")</h4>";	
+	}
+	else if(flag==1)
+	{
+		a.innerHTML="<h4>上一次维护的时间:<br><br>"+maintenance_m+"月"+maintenance_d+"日&nbsp;&nbsp;("+Convert(maintenance_w)+")</h4>";	
+	}
+	
 	}
 }
 function returnTime()
